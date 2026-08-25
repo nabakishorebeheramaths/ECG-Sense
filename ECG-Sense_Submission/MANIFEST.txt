@@ -1,0 +1,25 @@
+ECG-Sense Submission Package
+============================
+
+Project: ECG-Sense
+Domain: ECG R-Peak Detection
+Platform: MATLAB
+Dataset: MIT-BIH Arrhythmia Database
+Evaluated Records: 100, 101, 102, 103, 104
+
+FINAL PERFORMANCE
+Sensitivity: 99.41%
+Precision: 99.50%
+F1 Score: 99.45%
+TP: 10555
+FP: 53
+FN: 63
+
+FINAL PARAMETERS
+MinPeakDistance: 0.40 s
+MinPeakProminence: 0.15
+WidthThreshold: 35 samples
+MatchingTolerance: 0.10 s
+
+DATASET POLICY
+Original MIT-BIH dataset files are not duplicated in this package.

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="ECG-Sense analysis history."
+    >
+
+    <title>ECG-Sense | History</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/app.css"
+    >
+
+</head>
+
+
+<body>
+
+<div class="page">
+
+    <header class="nav">
+
+        <a
+            href="../index.html"
+            class="logo"
+        >
+
+            <div class="logo-mark">
+                ♥
+            </div>
+
+            <div class="logo-text">
+                <strong>ECG-Sense</strong>
+                <span>ECG intelligence platform</span>
+            </div>
+
+        </a>
+
+
+        <nav class="nav-links">
+
+            <a href="../index.html">
+                Home
+            </a>
+
+            <a href="upload.html">
+                Analyze
+            </a>
+
+            <a href="validation.html">
+                Results
+            </a>
+
+            <a
+                href="history.html"
+                aria-current="page"
+            >
+                History
+            </a>
+
+            <a href="help.html">
+                Help
+            </a>
+
+        </nav>
+
+
+        <a
+            href="upload.html"
+            class="nav-button"
+        >
+            New Analysis
+        </a>
+
+    </header>
+
+
+    <main>
+
+        <section class="hero">
+
+            <span class="eyebrow">
+                ANALYSIS HISTORY
+            </span>
+
+            <h1>
+                Your ECG
+                <span class="gradient-text">
+                    workspace.
+                </span>
+            </h1>
+
+            <p>
+                Re-open saved analyses, review previous
+                results, or remove reports you no longer need.
+            </p>
+
+        </section>
+
+
+        <section class="content">
+
+            <div
+                style="
+                    display:flex;
+                    align-items:flex-end;
+                    justify-content:space-between;
+                    gap:15px;
+                    flex-wrap:wrap;
+                "
+            >
+
+                <div>
+
+                    <span class="section-label">
+                        SAVED ANALYSES
+                    </span>
+
+                    <h2>
+                        Previous results
+                    </h2>
+
+                </div>
+
+
+                <a
+                    href="upload.html"
+                    class="primary-button"
+                >
+                    Analyze New ECG →
+                </a>
+
+            </div>
+
+
+            <div
+                id="historyList"
+                class="history-list"
+            >
+
+                <div class="history-empty">
+                    Loading analysis history...
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="content">
+
+            <div class="alert alert-info">
+
+                <strong>
+                    Privacy note:
+                </strong>
+
+                ECG-Sense stores analysis metadata and
+                generated report information in its local
+                application database. Uploaded raw data
+                storage should be configured carefully before
+                deploying this application publicly.
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer
+        style="
+            margin:72px 0 28px;
+            padding-top:24px;
+            border-top:1px solid rgba(15,23,42,.07);
+            text-align:center;
+            color:#64748b;
+            font-size:.72rem;
+        "
+    >
+        ECG-Sense · Saved analysis history
+    </footer>
+
+</div>
+
+
+<div
+    id="globalStatus"
+    class="global-status"
+    aria-live="polite"
+></div>
+
+
+<script src="../assets/common.js"></script>
+<script src="../assets/history.js"></script>
+
+</body>
+
+</html>

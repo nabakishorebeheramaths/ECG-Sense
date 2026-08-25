@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="ECG-Sense MIT-BIH validation benchmark."
+    >
+
+    <title>ECG-Sense | Validation Results</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/app.css"
+    >
+
+</head>
+
+
+<body>
+
+<div class="page">
+
+    <header class="nav">
+
+        <a
+            href="../index.html"
+            class="logo"
+        >
+
+            <div class="logo-mark">
+                ♥
+            </div>
+
+            <div class="logo-text">
+                <strong>ECG-Sense</strong>
+                <span>ECG intelligence platform</span>
+            </div>
+
+        </a>
+
+
+        <nav class="nav-links">
+
+            <a href="../index.html">
+                Home
+            </a>
+
+            <a href="upload.html">
+                Analyze
+            </a>
+
+            <a
+                href="validation.html"
+                aria-current="page"
+            >
+                Results
+            </a>
+
+            <a href="history.html">
+                History
+            </a>
+
+            <a href="help.html">
+                Help
+            </a>
+
+        </nav>
+
+
+        <a
+            href="upload.html"
+            class="nav-button"
+        >
+            Try ECG
+        </a>
+
+    </header>
+
+
+    <main>
+
+        <section class="hero">
+
+            <span class="eyebrow">
+                VERIFIED BENCHMARK
+            </span>
+
+            <h1>
+                Transparent
+                <span class="gradient-text">
+                    performance.
+                </span>
+            </h1>
+
+            <p>
+                ECG-Sense evaluates the validated MIT-BIH
+                records against reference annotations so
+                detector performance can be measured honestly.
+            </p>
+
+        </section>
+
+
+        <section class="content">
+
+            <span class="section-label">
+                OVERALL PERFORMANCE
+            </span>
+
+            <h2>
+                Aggregate benchmark
+            </h2>
+
+
+            <div class="metric-grid">
+
+                <div class="metric-card">
+                    <div class="metric-label">
+                        Sensitivity
+                    </div>
+                    <div
+                        id="overallSensitivity"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">
+                        Precision
+                    </div>
+                    <div
+                        id="overallPrecision"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">
+                        F1 Score
+                    </div>
+                    <div
+                        id="overallF1"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">
+                        True Positives
+                    </div>
+                    <div
+                        id="overallTP"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">
+                        False Positives
+                    </div>
+                    <div
+                        id="overallFP"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">
+                        False Negatives
+                    </div>
+                    <div
+                        id="overallFN"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="content">
+
+            <div
+                class="card"
+                style="
+                    overflow:hidden;
+                "
+            >
+
+                <span class="section-label">
+                    RECORD-WISE VALIDATION
+                </span>
+
+                <h2
+                    style="
+                        margin-top:7px;
+                        font-size:1.7rem;
+                    "
+                >
+                    MIT-BIH Records 100–104
+                </h2>
+
+
+                <div class="table-wrap">
+
+                    <table
+                        class="data-table"
+                        aria-label="ECG-Sense benchmark results"
+                    >
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Record
+                                </th>
+
+                                <th>
+                                    Reference
+                                </th>
+
+                                <th>
+                                    Detected
+                                </th>
+
+                                <th>
+                                    TP
+                                </th>
+
+                                <th>
+                                    FP
+                                </th>
+
+                                <th>
+                                    FN
+                                </th>
+
+                                <th>
+                                    Sensitivity
+                                </th>
+
+                                <th>
+                                    Precision
+                                </th>
+
+                                <th>
+                                    F1
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="benchmarkBody">
+
+                            <tr>
+                                <td colspan="9">
+                                    Loading benchmark...
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="content">
+
+            <div class="card">
+
+                <span class="section-label">
+                    METHODOLOGY
+                </span>
+
+                <h2
+                    style="
+                        margin-top:7px;
+                        font-size:1.7rem;
+                    "
+                >
+                    How validation works
+                </h2>
+
+                <p
+                    style="
+                        color:#64748b;
+                        max-width:850px;
+                    "
+                >
+                    ECG-Sense detects candidate heartbeat peaks,
+                    compares them with reference annotations
+                    using a fixed timing tolerance, and derives
+                    TP, FP, FN, sensitivity, precision and F1.
+                </p>
+
+
+                <div
+                    style="
+                        display:flex;
+                        gap:10px;
+                        flex-wrap:wrap;
+                        margin-top:18px;
+                    "
+                >
+
+                    <a
+                        href="advanced.html?record=102"
+                        class="primary-button"
+                    >
+                        Inspect Record 102 →
+                    </a>
+
+                    <a
+                        href="help.html"
+                        class="secondary-button"
+                    >
+                        Read Methodology
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="content">
+
+            <div class="alert alert-warning">
+
+                These are algorithmic benchmark results against
+                reference annotations. They do not represent a
+                medical diagnosis or patient outcome.
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer
+        style="
+            margin:72px 0 28px;
+            padding-top:24px;
+            border-top:1px solid rgba(15,23,42,.07);
+            text-align:center;
+            color:#64748b;
+            font-size:.72rem;
+        "
+    >
+        ECG-Sense · MIT-BIH algorithm validation
+    </footer>
+
+</div>
+
+
+<div
+    id="globalStatus"
+    class="global-status"
+    aria-live="polite"
+></div>
+
+
+<script src="../assets/common.js"></script>
+<script src="../assets/validation.js"></script>
+
+</body>
+
+</html>

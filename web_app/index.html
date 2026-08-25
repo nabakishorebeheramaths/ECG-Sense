@@ -1,0 +1,777 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#ffffff"
+    >
+
+    <meta
+        name="description"
+        content="ECG-Sense — a human-centered ECG signal analysis, heartbeat detection and transparent validation platform."
+    >
+
+    <title>
+        ECG-Sense | Understand Your ECG
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="assets/app.css"
+    >
+
+</head>
+
+
+<body>
+
+<div class="page">
+
+
+    <!-- ======================================================
+         NAVIGATION
+         ====================================================== -->
+
+    <header class="nav">
+
+        <a
+            href="index.html"
+            class="logo"
+            aria-label="ECG-Sense home"
+        >
+
+            <div
+                class="logo-mark"
+                aria-hidden="true"
+            >
+                ♥
+            </div>
+
+            <div class="logo-text">
+
+                <strong>
+                    ECG-Sense
+                </strong>
+
+                <span>
+                    ECG intelligence platform
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <nav
+            class="nav-links"
+            aria-label="Primary navigation"
+        >
+
+            <a
+                href="index.html"
+                aria-current="page"
+            >
+                Home
+            </a>
+
+            <a
+                href="pages/upload.html"
+            >
+                Analyze
+            </a>
+
+            <a
+                href="pages/validation.html"
+            >
+                Results
+            </a>
+
+            <a
+                href="pages/history.html"
+            >
+                History
+            </a>
+
+            <a
+                href="pages/help.html"
+            >
+                Help
+            </a>
+
+        </nav>
+
+
+        <a
+            href="pages/upload.html"
+            class="nav-button"
+        >
+            Get Started
+        </a>
+
+    </header>
+
+
+    <!-- ======================================================
+         MAIN
+         ====================================================== -->
+
+    <main>
+
+
+        <!-- ==================================================
+             HERO
+             ================================================== -->
+
+        <section
+            class="hero"
+            aria-labelledby="hero-title"
+        >
+
+            <span class="eyebrow">
+                ECG ANALYSIS MADE SIMPLE
+            </span>
+
+
+            <h1 id="hero-title">
+
+                Understand your
+
+                <span class="gradient-text">
+                    ECG signal
+                </span>
+
+                with confidence.
+
+            </h1>
+
+
+            <p>
+                ECG-Sense turns ECG recordings into
+                understandable signal-processing results
+                using deterministic heartbeat detection,
+                transparent validation, and AI-assisted
+                explanation.
+            </p>
+
+
+            <div
+                class="hero-actions"
+                style="
+                    margin-top:28px;
+                    display:flex;
+                    gap:12px;
+                    flex-wrap:wrap;
+                "
+            >
+
+                <a
+                    href="pages/upload.html"
+                    class="primary-button"
+                >
+                    Analyze an ECG →
+                </a>
+
+
+                <a
+                    href="pages/analyze.html?mode=sample"
+                    class="secondary-button"
+                >
+                    Try Record 102
+                </a>
+
+            </div>
+
+
+            <!-- TRUST STRIP -->
+
+            <div
+                style="
+                    margin-top:34px;
+                    display:grid;
+                    grid-template-columns:
+                        repeat(3,minmax(0,1fr));
+                    gap:10px;
+                "
+            >
+
+                <div
+                    style="
+                        padding:14px;
+                        border:1px solid rgba(15,23,42,.06);
+                        border-radius:15px;
+                        background:rgba(255,255,255,.66);
+                    "
+                >
+
+                    <strong
+                        style="
+                            display:block;
+                            font-size:.82rem;
+                            font-weight:900;
+                        "
+                    >
+                        Signal Processing
+                    </strong>
+
+                    <span
+                        style="
+                            display:block;
+                            margin-top:4px;
+                            color:#64748b;
+                            font-size:.68rem;
+                            line-height:1.5;
+                        "
+                    >
+                        Deterministic ECG analysis pipeline
+                    </span>
+
+                </div>
+
+
+                <div
+                    style="
+                        padding:14px;
+                        border:1px solid rgba(15,23,42,.06);
+                        border-radius:15px;
+                        background:rgba(255,255,255,.66);
+                    "
+                >
+
+                    <strong
+                        style="
+                            display:block;
+                            font-size:.82rem;
+                            font-weight:900;
+                        "
+                    >
+                        Transparent
+                    </strong>
+
+                    <span
+                        style="
+                            display:block;
+                            margin-top:4px;
+                            color:#64748b;
+                            font-size:.68rem;
+                            line-height:1.5;
+                        "
+                    >
+                        Metrics and validation stay visible
+                    </span>
+
+                </div>
+
+
+                <div
+                    style="
+                        padding:14px;
+                        border:1px solid rgba(15,23,42,.06);
+                        border-radius:15px;
+                        background:rgba(255,255,255,.66);
+                    "
+                >
+
+                    <strong
+                        style="
+                            display:block;
+                            font-size:.82rem;
+                            font-weight:900;
+                        "
+                    >
+                        AI Assisted
+                    </strong>
+
+                    <span
+                        style="
+                            display:block;
+                            margin-top:4px;
+                            color:#64748b;
+                            font-size:.68rem;
+                            line-height:1.5;
+                        "
+                    >
+                        Human-readable explanation layer
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             QUICK ACTIONS
+             ================================================== -->
+
+        <section
+            class="content"
+            aria-labelledby="quick-actions-title"
+        >
+
+            <span class="section-label">
+                START HERE
+            </span>
+
+
+            <h2 id="quick-actions-title">
+                Choose what you want to do
+            </h2>
+
+
+            <p class="content-description">
+                ECG-Sense keeps everyday analysis simple
+                while giving technical users access to
+                deeper measurements and validation.
+            </p>
+
+
+            <div class="card-grid">
+
+
+                <!-- UPLOAD -->
+
+                <article class="card">
+
+                    <div
+                        class="icon"
+                        style="
+                            color:#ff006e;
+                            background:#fff0f6;
+                        "
+                        aria-hidden="true"
+                    >
+                        ↑
+                    </div>
+
+
+                    <h3>
+                        Analyze an ECG
+                    </h3>
+
+
+                    <p>
+                        Upload a supported CSV or TXT ECG
+                        recording and start a real analysis.
+                    </p>
+
+
+                    <a
+                        href="pages/upload.html"
+                        class="primary-button"
+                        style="
+                            display:inline-flex;
+                            align-items:center;
+                            justify-content:center;
+                            margin-top:18px;
+                            width:100%;
+                        "
+                    >
+                        Start Analysis →
+                    </a>
+
+                </article>
+
+
+                <!-- SAMPLE -->
+
+                <article class="card">
+
+                    <div
+                        class="icon"
+                        style="
+                            color:#8338ec;
+                            background:#f4efff;
+                        "
+                        aria-hidden="true"
+                    >
+                        ♥
+                    </div>
+
+
+                    <h3>
+                        Explore a validated sample
+                    </h3>
+
+
+                    <p>
+                        Run ECG-Sense on MIT-BIH Record 102
+                        using the validated benchmark pipeline.
+                    </p>
+
+
+                    <a
+                        href="pages/analyze.html?mode=sample"
+                        class="secondary-button"
+                        style="
+                            display:inline-flex;
+                            align-items:center;
+                            justify-content:center;
+                            margin-top:18px;
+                            width:100%;
+                        "
+                    >
+                        Try Sample →
+                    </a>
+
+                </article>
+
+
+                <!-- HISTORY -->
+
+                <article class="card">
+
+                    <div
+                        class="icon"
+                        style="
+                            color:#3a86ff;
+                            background:#edf4ff;
+                        "
+                        aria-hidden="true"
+                    >
+                        ◷
+                    </div>
+
+
+                    <h3>
+                        Review your analyses
+                    </h3>
+
+
+                    <p>
+                        Open saved analyses, review reports,
+                        or remove previous results.
+                    </p>
+
+
+                    <a
+                        href="pages/history.html"
+                        class="secondary-button"
+                        style="
+                            display:inline-flex;
+                            align-items:center;
+                            justify-content:center;
+                            margin-top:18px;
+                            width:100%;
+                        "
+                    >
+                        Open History →
+                    </a>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             HOW IT WORKS
+             ================================================== -->
+
+        <section
+            class="content"
+            aria-labelledby="workflow-title"
+        >
+
+            <span class="section-label">
+                THE WORKFLOW
+            </span>
+
+
+            <h2 id="workflow-title">
+                Simple on the outside.
+                Powerful underneath.
+            </h2>
+
+
+            <p class="content-description">
+                The user sees a clear workflow while the
+                backend handles signal processing, persistence,
+                benchmark validation and AI-assisted reporting.
+            </p>
+
+
+            <div class="card-grid">
+
+
+                <article class="card">
+
+                    <div
+                        class="icon"
+                        style="
+                            color:#ff006e;
+                            background:#fff0f6;
+                            font-size:.78rem;
+                        "
+                    >
+                        01
+                    </div>
+
+                    <h3>
+                        Provide ECG
+                    </h3>
+
+                    <p>
+                        Select a supported ECG recording
+                        and create a new analysis session.
+                    </p>
+
+                </article>
+
+
+                <article class="card">
+
+                    <div
+                        class="icon"
+                        style="
+                            color:#8338ec;
+                            background:#f4efff;
+                            font-size:.78rem;
+                        "
+                    >
+                        02
+                    </div>
+
+                    <h3>
+                        Process Signal
+                    </h3>
+
+                    <p>
+                        ECG-Sense performs preprocessing,
+                        peak detection and waveform analysis.
+                    </p>
+
+                </article>
+
+
+                <article class="card">
+
+                    <div
+                        class="icon"
+                        style="
+                            color:#06a77d;
+                            background:#eafbf5;
+                            font-size:.78rem;
+                        "
+                    >
+                        03
+                    </div>
+
+                    <h3>
+                        Understand Results
+                    </h3>
+
+                    <p>
+                        Read a simple report first, then
+                        open advanced metrics when needed.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             VALIDATION FEATURE
+             ================================================== -->
+
+        <section
+            class="content"
+            aria-labelledby="validation-title"
+        >
+
+            <div
+                class="card"
+                style="
+                    padding:30px;
+                    background:
+                        linear-gradient(
+                            120deg,
+                            #fff0f7,
+                            #f4efff 42%,
+                            #edf5ff
+                        );
+                "
+            >
+
+                <span class="section-label">
+                    VALIDATION
+                </span>
+
+
+                <h2
+                    id="validation-title"
+                    style="
+                        margin-top:8px;
+                    "
+                >
+                    Engineering performance stays separate
+                    from user interpretation.
+                </h2>
+
+
+                <p
+                    style="
+                        max-width:760px;
+                        color:#475569;
+                    "
+                >
+                    MIT-BIH benchmark records are evaluated
+                    against reference annotations to calculate
+                    sensitivity, precision and F1. Uploaded
+                    ECG files without ground-truth annotations
+                    are not assigned fabricated accuracy scores.
+                </p>
+
+
+                <div
+                    style="
+                        margin-top:20px;
+                        display:flex;
+                        gap:10px;
+                        flex-wrap:wrap;
+                    "
+                >
+
+                    <a
+                        href="pages/validation.html"
+                        class="primary-button"
+                    >
+                        View Validation Results →
+                    </a>
+
+                    <a
+                        href="pages/help.html"
+                        class="secondary-button"
+                    >
+                        Learn How It Works
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             RESPONSIBLE USE
+             ================================================== -->
+
+        <section
+            class="content"
+            aria-labelledby="responsible-use-title"
+        >
+
+            <span class="section-label">
+                RESPONSIBLE USE
+            </span>
+
+
+            <h2 id="responsible-use-title">
+                Analysis is not diagnosis.
+            </h2>
+
+
+            <p class="content-description">
+                ECG-Sense provides digital signal-processing
+                results and AI-assisted explanations. It does
+                not replace professional medical evaluation.
+            </p>
+
+
+            <div
+                class="alert alert-warning"
+                style="
+                    margin-top:18px;
+                "
+            >
+                <strong>
+                    Important:
+                </strong>
+
+                ECG-Sense is an engineering and research
+                analysis platform. Medical interpretation
+                should be performed by a qualified healthcare
+                professional.
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ======================================================
+         FOOTER
+         ====================================================== -->
+
+    <footer
+        style="
+            margin:72px 0 28px;
+            padding-top:24px;
+            border-top:1px solid rgba(15,23,42,.07);
+            text-align:center;
+            color:#64748b;
+            font-size:.72rem;
+            line-height:1.7;
+        "
+    >
+
+        <strong
+            style="
+                color:#334155;
+                font-weight:850;
+            "
+        >
+            ECG-Sense
+        </strong>
+
+        · ECG signal analysis platform
+
+        <br>
+
+        Research prototype ·
+        Deterministic DSP ·
+        AI-assisted reporting
+
+    </footer>
+
+</div>
+
+
+<!-- GLOBAL STATUS -->
+
+<div
+    id="globalStatus"
+    class="global-status"
+    aria-live="polite"
+></div>
+
+
+<!-- GLOBAL JS -->
+
+<script
+    src="assets/common.js"
+></script>
+
+<script
+    src="assets/home.js"
+></script>
+
+
+</body>
+
+</html>

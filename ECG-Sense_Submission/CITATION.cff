@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+title: "ECG-Sense: High-Performance ECG R-Peak Detection Pipeline"
+type: software
+message: "If you use ECG-Sense in your work, please cite this software project."
+authors:
+  - given-names: "Nabakishore"
+    family-names: "Behera"
+date-released: "2026-08-24"
+version: "1.0.0"
+keywords:
+  - ECG
+  - ECG signal processing
+  - R-peak detection
+  - MIT-BIH
+  - MATLAB
+  - digital signal processing
+license: "Research-only"
+abstract: "MATLAB-based ECG R-peak detection and evaluation pipeline using baseline correction, Butterworth filtering, peak detection, morphological selection, and reference-beat matching."

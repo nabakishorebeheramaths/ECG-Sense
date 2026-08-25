@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="ECG-Sense ECG upload and analysis workspace."
+    >
+
+    <title>ECG-Sense | Analyze ECG</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/app.css"
+    >
+</head>
+
+
+<body>
+
+<div class="page">
+
+    <header class="nav">
+
+        <a
+            href="../index.html"
+            class="logo"
+        >
+            <div class="logo-mark">♥</div>
+
+            <div class="logo-text">
+                <strong>ECG-Sense</strong>
+                <span>ECG intelligence platform</span>
+            </div>
+        </a>
+
+        <nav class="nav-links">
+
+            <a href="../index.html">Home</a>
+
+            <a
+                href="upload.html"
+                aria-current="page"
+            >
+                Analyze
+            </a>
+
+            <a href="validation.html">Results</a>
+
+            <a href="history.html">History</a>
+
+            <a href="help.html">Help</a>
+
+        </nav>
+
+        <a
+            href="history.html"
+            class="nav-button"
+        >
+            History
+        </a>
+
+    </header>
+
+
+    <main>
+
+        <section class="hero">
+
+            <span class="eyebrow">
+                START A NEW ANALYSIS
+            </span>
+
+            <h1>
+                Bring your
+                <span class="gradient-text">
+                    ECG signal
+                </span>
+                into ECG-Sense.
+            </h1>
+
+            <p>
+                Upload a supported ECG recording and
+                ECG-Sense will process the signal,
+                detect heartbeat peaks, save the analysis,
+                and prepare it for reporting.
+            </p>
+
+        </section>
+
+
+        <section class="content">
+
+            <span class="section-label">
+                ECG INPUT
+            </span>
+
+            <h2>
+                Choose how you want to analyze
+            </h2>
+
+            <p class="content-description">
+                Start with a real uploaded recording or
+                explore the validated MIT-BIH sample.
+            </p>
+
+
+            <div class="card-grid">
+
+                <article class="card">
+
+                    <div
+                        class="icon"
+                        style="
+                            color:#ff006e;
+                            background:#fff0f6;
+                        "
+                    >
+                        ↑
+                    </div>
+
+                    <h3>
+                        Upload your ECG
+                    </h3>
+
+                    <p>
+                        CSV and TXT ECG recordings are
+                        currently supported.
+                    </p>
+
+
+                    <div class="form-group">
+
+                        <label for="ecgFile">
+                            Select ECG recording
+                        </label>
+
+                        <input
+                            id="ecgFile"
+                            type="file"
+                            accept=".csv,.txt"
+                        >
+
+                    </div>
+
+
+                    <div
+                        id="fileStatus"
+                        class="alert alert-info"
+                    >
+                        No file selected.
+                    </div>
+
+
+                    <button
+                        id="uploadButton"
+                        class="primary-button"
+                        style="
+                            width:100%;
+                            margin-top:14px;
+                        "
+                        disabled
+                    >
+                        Upload & Analyze →
+                    </button>
+
+                </article>
+
+
+                <article class="card">
+
+                    <div
+                        class="icon"
+                        style="
+                            color:#8338ec;
+                            background:#f4efff;
+                        "
+                    >
+                        ♥
+                    </div>
+
+                    <h3>
+                        Explore Record 102
+                    </h3>
+
+                    <p>
+                        Use the MIT-BIH Record 102
+                        validation path with reference
+                        annotations and benchmark metrics.
+                    </p>
+
+                    <a
+                        href="analyze.html?mode=sample"
+                        class="secondary-button"
+                        style="
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            margin-top:18px;
+                            width:100%;
+                        "
+                    >
+                        Try Record 102 →
+                    </a>
+
+                </article>
+
+            </div>
+
+
+            <div
+                id="liveStatus"
+                class="card"
+                style="display:none; margin-top:18px;"
+            >
+
+                <span class="section-label">
+                    LIVE STATUS
+                </span>
+
+                <h3 id="statusTitle">
+                    Processing...
+                </h3>
+
+                <p id="statusMessage">
+                    Connecting to ECG-Sense.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <section class="content">
+
+            <div class="card">
+
+                <span class="section-label">
+                    WHAT HAPPENS NEXT
+                </span>
+
+                <h2
+                    style="
+                        margin-top:8px;
+                        font-size:clamp(
+                            1.7rem,
+                            4vw,
+                            2.3rem
+                        );
+                    "
+                >
+                    From signal to understandable result.
+                </h2>
+
+                <div class="metric-grid">
+
+                    <div class="metric-card">
+                        <div class="metric-label">
+                            Step 01
+                        </div>
+                        <div
+                            class="metric-value"
+                            style="
+                                font-size:1.2rem;
+                            "
+                        >
+                            Validate
+                        </div>
+                        <div class="metric-caption">
+                            File and signal checks
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">
+                            Step 02
+                        </div>
+                        <div
+                            class="metric-value"
+                            style="
+                                font-size:1.2rem;
+                            "
+                        >
+                            Process
+                        </div>
+                        <div class="metric-caption">
+                            ECG signal filtering
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">
+                            Step 03
+                        </div>
+                        <div
+                            class="metric-value"
+                            style="
+                                font-size:1.2rem;
+                            "
+                        >
+                            Detect
+                        </div>
+                        <div class="metric-caption">
+                            Heartbeat peak detection
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">
+                            Step 04
+                        </div>
+                        <div
+                            class="metric-value"
+                            style="
+                                font-size:1.2rem;
+                            "
+                        >
+                            Report
+                        </div>
+                        <div class="metric-caption">
+                            Results and explanation
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="content">
+
+            <div class="alert alert-warning">
+
+                <strong>
+                    Important:
+                </strong>
+
+                ECG-Sense provides engineering-level
+                signal analysis. Uploaded ECG files
+                without reference annotations are not
+                assigned fabricated clinical accuracy
+                metrics.
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer
+        style="
+            margin:72px 0 28px;
+            padding-top:24px;
+            border-top:1px solid rgba(15,23,42,.07);
+            text-align:center;
+            color:#64748b;
+            font-size:.72rem;
+        "
+    >
+        ECG-Sense · ECG signal analysis platform
+    </footer>
+
+</div>
+
+
+<div
+    id="globalStatus"
+    class="global-status"
+    aria-live="polite"
+></div>
+
+
+<script src="../assets/common.js"></script>
+<script src="../assets/upload.js"></script>
+
+</body>
+
+</html>

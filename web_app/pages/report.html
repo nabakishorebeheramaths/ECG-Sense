@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="ECG-Sense user-facing ECG analysis report."
+    >
+
+    <title>ECG-Sense | Report</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/app.css"
+    >
+
+</head>
+
+
+<body>
+
+<div class="page">
+
+    <header class="nav">
+
+        <a
+            href="../index.html"
+            class="logo"
+        >
+
+            <div class="logo-mark">
+                ♥
+            </div>
+
+            <div class="logo-text">
+                <strong>ECG-Sense</strong>
+                <span>ECG intelligence platform</span>
+            </div>
+
+        </a>
+
+
+        <nav class="nav-links">
+
+            <a href="../index.html">
+                Home
+            </a>
+
+            <a href="upload.html">
+                Analyze
+            </a>
+
+            <a href="validation.html">
+                Results
+            </a>
+
+            <a href="history.html">
+                History
+            </a>
+
+            <a href="help.html">
+                Help
+            </a>
+
+        </nav>
+
+
+        <a
+            href="upload.html"
+            class="nav-button"
+        >
+            New Analysis
+        </a>
+
+    </header>
+
+
+    <main>
+
+        <section class="hero">
+
+            <span class="eyebrow">
+                YOUR ECG SUMMARY
+            </span>
+
+            <h1>
+                Analysis
+                <span class="gradient-text">
+                    complete.
+                </span>
+            </h1>
+
+            <p
+                id="reportDescription"
+            >
+                ECG-Sense has processed your recording
+                and prepared a clear summary.
+            </p>
+
+        </section>
+
+
+        <section class="content">
+
+            <div
+                class="report-header"
+            >
+
+                <div>
+
+                    <span class="section-label">
+                        RESULT
+                    </span>
+
+                    <h2
+                        id="reportRecord"
+                        style="
+                            margin-top:7px;
+                        "
+                    >
+                        ECG Analysis
+                    </h2>
+
+                </div>
+
+
+                <div
+                    class="report-badge"
+                >
+                    Analysis Complete
+                </div>
+
+            </div>
+
+
+            <div class="metric-grid">
+
+                <div class="metric-card">
+
+                    <div class="metric-label">
+                        Heartbeat Peaks
+                    </div>
+
+                    <div
+                        id="userBeatCount"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
+
+                    <div class="metric-caption">
+                        Detected by signal processing
+                    </div>
+
+                </div>
+
+
+                <div class="metric-card">
+
+                    <div class="metric-label">
+                        Signal Quality
+                    </div>
+
+                    <div
+                        id="userSignalQuality"
+                        class="metric-value"
+                        style="font-size:1.4rem;"
+                    >
+                        —
+                    </div>
+
+                    <div class="metric-caption">
+                        Engineering quality assessment
+                    </div>
+
+                </div>
+
+
+                <div class="metric-card">
+
+                    <div class="metric-label">
+                        Analysis Quality
+                    </div>
+
+                    <div
+                        id="userAnalysisQuality"
+                        class="metric-value"
+                        style="font-size:1.25rem;"
+                    >
+                        —
+                    </div>
+
+                </div>
+
+
+                <div class="metric-card">
+
+                    <div class="metric-label">
+                        Report
+                    </div>
+
+                    <div
+                        class="metric-value"
+                        style="font-size:1.25rem;"
+                    >
+                        Ready
+                    </div>
+
+                    <div class="metric-caption">
+                        Detailed information available
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="content">
+
+            <div class="waveform-card">
+
+                <span class="section-label">
+                    ECG SIGNAL
+                </span>
+
+                <h2
+                    style="
+                        margin-top:7px;
+                        font-size:1.45rem;
+                    "
+                >
+                    Detected heartbeat pattern
+                </h2>
+
+                <canvas
+                    id="userEcgCanvas"
+                    style="
+                        width:100%;
+                        height:300px;
+                        margin-top:18px;
+                    "
+                ></canvas>
+
+            </div>
+
+        </section>
+
+
+        <section class="content">
+
+            <div class="card">
+
+                <span class="section-label">
+                    UNDERSTANDING YOUR RESULT
+                </span>
+
+                <h2
+                    style="
+                        margin-top:7px;
+                        font-size:1.65rem;
+                    "
+                >
+                    What ECG-Sense actually measured
+                </h2>
+
+                <p
+                    style="
+                        color:#64748b;
+                        max-width:800px;
+                    "
+                >
+                    ECG-Sense analyzes the digital waveform
+                    and identifies heartbeat peaks using its
+                    signal-processing engine. This result is
+                    an engineering analysis of the recording,
+                    not a medical diagnosis.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <section class="content">
+
+            <div class="card">
+
+                <span class="section-label">
+                    NEXT STEP
+                </span>
+
+                <h2
+                    style="
+                        margin-top:7px;
+                        font-size:1.6rem;
+                    "
+                >
+                    Explore the complete report
+                </h2>
+
+                <div
+                    style="
+                        display:flex;
+                        gap:10px;
+                        flex-wrap:wrap;
+                        margin-top:18px;
+                    "
+                >
+
+                    <button
+                        id="viewDetailedReport"
+                        class="primary-button"
+                    >
+                        View Detailed Report →
+                    </button>
+
+                    <button
+                        id="newAnalysis"
+                        class="secondary-button"
+                    >
+                        Analyze Another ECG
+                    </button>
+
+                    <a
+                        href="history.html"
+                        class="secondary-button"
+                    >
+                        View History
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="content">
+
+            <div class="alert alert-warning">
+
+                <strong>
+                    Important:
+                </strong>
+
+                ECG-Sense provides signal-processing
+                analysis and AI-assisted explanation.
+                It is not a substitute for evaluation
+                by a qualified healthcare professional.
+
+            </div>
+
+        </section>
+
+
+        <section class="content">
+
+            <div class="card">
+
+                <span class="section-label">
+                    TECHNICAL SNAPSHOT
+                </span>
+
+                <div class="metric-grid">
+
+                    <div class="metric-card">
+                        <div class="metric-label">
+                            Reference Beats
+                        </div>
+                        <div
+                            id="detailReference"
+                            class="metric-value"
+                            style="font-size:1.35rem;"
+                        >
+                            —
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">
+                            Detected Peaks
+                        </div>
+                        <div
+                            id="detailDetected"
+                            class="metric-value"
+                            style="font-size:1.35rem;"
+                        >
+                            —
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">
+                            True Positives
+                        </div>
+                        <div
+                            id="detailTP"
+                            class="metric-value"
+                            style="font-size:1.35rem;"
+                        >
+                            —
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-label">
+                            F1 Score
+                        </div>
+                        <div
+                            id="detailF1"
+                            class="metric-value"
+                            style="font-size:1.35rem;"
+                        >
+                            —
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer
+        style="
+            margin:72px 0 28px;
+            padding-top:24px;
+            border-top:1px solid rgba(15,23,42,.07);
+            text-align:center;
+            color:#64748b;
+            font-size:.72rem;
+        "
+    >
+        ECG-Sense · User-facing ECG analysis report
+    </footer>
+
+</div>
+
+
+<div
+    id="globalStatus"
+    class="global-status"
+    aria-live="polite"
+></div>
+
+
+<script src="../assets/common.js"></script>
+<script src="../assets/analyze.js"></script>
+<script src="../assets/report.js"></script>
+
+</body>
+
+</html>

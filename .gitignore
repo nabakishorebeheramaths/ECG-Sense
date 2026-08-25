@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Local database
+backend/storage/*.db
+backend/storage/*.sqlite
+backend/storage/*.sqlite3
+
+# Generated ECG/test files
+backend/test_ecg.csv
+backend/storage/uploads/*
+backend/storage/reports/*
+
+# Keep required folders
+!backend/storage/uploads/.gitkeep
+!backend/storage/reports/.gitkeep
+
+# IDE / OS
+.vscode/
+.idea/
+*.log
+.DS_Store
+Thumbs.db
+
+# Frontend
+node_modules/
+dist/
+build/
+# Large MATLAB workspace/cache file
+data/mitdb/matlab.mat

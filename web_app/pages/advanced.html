@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="ECG-Sense advanced technical ECG report."
+    >
+
+    <title>ECG-Sense | Advanced Analysis</title>
+
+    <link
+        rel="stylesheet"
+        href="../assets/app.css"
+    >
+
+</head>
+
+
+<body>
+
+<div class="page">
+
+    <header class="nav">
+
+        <a
+            href="../index.html"
+            class="logo"
+        >
+
+            <div class="logo-mark">
+                ♥
+            </div>
+
+            <div class="logo-text">
+                <strong>ECG-Sense</strong>
+                <span>ECG intelligence platform</span>
+            </div>
+
+        </a>
+
+
+        <nav class="nav-links">
+
+            <a href="../index.html">
+                Home
+            </a>
+
+            <a href="upload.html">
+                Analyze
+            </a>
+
+            <a
+                href="validation.html"
+                aria-current="page"
+            >
+                Results
+            </a>
+
+            <a href="history.html">
+                History
+            </a>
+
+            <a href="help.html">
+                Help
+            </a>
+
+        </nav>
+
+
+        <a
+            href="upload.html"
+            class="nav-button"
+        >
+            New Analysis
+        </a>
+
+    </header>
+
+
+    <main>
+
+        <section class="hero">
+
+            <span class="eyebrow">
+                ADVANCED ANALYSIS
+            </span>
+
+            <h1>
+                Technical details for
+                <span class="gradient-text">
+                    deeper review.
+                </span>
+            </h1>
+
+            <p>
+                This page exposes the engineering measurements
+                behind the user-facing ECG report.
+            </p>
+
+        </section>
+
+
+        <section class="content">
+
+            <div class="metric-grid">
+
+                <div class="metric-card">
+                    <div class="metric-label">
+                        Record
+                    </div>
+                    <div
+                        id="detailRecord"
+                        class="metric-value"
+                        style="font-size:1.5rem;"
+                    >
+                        —
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">
+                        Sampling Rate
+                    </div>
+                    <div
+                        id="detailSamplingRate"
+                        class="metric-value"
+                        style="font-size:1.5rem;"
+                    >
+                        —
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">
+                        Duration
+                    </div>
+                    <div
+                        id="detailDuration"
+                        class="metric-value"
+                        style="font-size:1.5rem;"
+                    >
+                        —
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">
+                        F1 Score
+                    </div>
+                    <div
+                        id="detailF1"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="content">
+
+            <span class="section-label">
+                DETECTION COUNTS
+            </span>
+
+            <h2>
+                Reference and detection comparison
+            </h2>
+
+
+            <div class="metric-grid">
+
+                <div class="metric-card">
+                    <div class="metric-label">
+                        Reference Beats
+                    </div>
+                    <div
+                        id="detailReference"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">
+                        Detected Peaks
+                    </div>
+                    <div
+                        id="detailDetected"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">
+                        True Positives
+                    </div>
+                    <div
+                        id="detailTP"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">
+                        False Positives
+                    </div>
+                    <div
+                        id="detailFP"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">
+                        False Negatives
+                    </div>
+                    <div
+                        id="detailFN"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">
+                        Sensitivity
+                    </div>
+                    <div
+                        id="detailSensitivity"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">
+                        Precision
+                    </div>
+                    <div
+                        id="detailPrecision"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-label">
+                        F1 Score
+                    </div>
+                    <div
+                        id="detailF1"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="content">
+
+            <div
+                class="card"
+                style="
+                    background:
+                        linear-gradient(
+                            120deg,
+                            #fff0f7,
+                            #f4efff,
+                            #edf5ff
+                        );
+                "
+            >
+
+                <span class="section-label">
+                    HOW TO READ THIS
+                </span>
+
+                <h2
+                    style="
+                        margin-top:8px;
+                        font-size:1.8rem;
+                    "
+                >
+                    Engineering validation, not diagnosis.
+                </h2>
+
+                <p
+                    style="
+                        color:#475569;
+                        max-width:820px;
+                    "
+                >
+                    Sensitivity, precision and F1 describe
+                    detector performance against reference
+                    annotations. They are algorithmic
+                    validation metrics and should not be
+                    interpreted as a medical diagnosis.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <section class="content">
+
+            <div
+                style="
+                    display:flex;
+                    gap:10px;
+                    flex-wrap:wrap;
+                "
+            >
+
+                <button
+                    id="downloadReport"
+                    class="primary-button"
+                >
+                    Download Analysis JSON ↓
+                </button>
+
+                <a
+                    href="validation.html"
+                    class="secondary-button"
+                >
+                    View Benchmark
+                </a>
+
+                <a
+                    href="report.html"
+                    class="secondary-button"
+                >
+                    Back to Report
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer
+        style="
+            margin:72px 0 28px;
+            padding-top:24px;
+            border-top:1px solid rgba(15,23,42,.07);
+            text-align:center;
+            color:#64748b;
+            font-size:.72rem;
+        "
+    >
+        ECG-Sense · Advanced engineering analysis
+    </footer>
+
+</div>
+
+
+<div
+    id="globalStatus"
+    class="global-status"
+    aria-live="polite"
+></div>
+
+
+<script src="../assets/common.js"></script>
+<script src="../assets/advanced.js"></script>
+
+</body>
+
+</html>
