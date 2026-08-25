@@ -40,12 +40,9 @@ from services.uploaded_ecg_service import (
 
 # ============================================================
 # ECG-SENSE API
-# Production-style backend
 # ============================================================
 
-
 APP_VERSION = "2.0.0"
-
 
 SUPPORTED_RECORDS = (
     "100",
@@ -55,10 +52,7 @@ SUPPORTED_RECORDS = (
     "104",
 )
 
-
-MAX_UPLOAD_BYTES = (
-    10 * 1024 * 1024
-)
+MAX_UPLOAD_BYTES = 10 * 1024 * 1024
 
 
 # ============================================================
@@ -87,16 +81,55 @@ app = FastAPI(
 # CORS
 # ============================================================
 
+# IMPORTANT:
+# The frontend is hosted at:
+# https://ecg-sense-1.onrender.com
+#
+# The backend is hosted at:
+# https://ecg-sense.onrender.com
+#
+# The frontend origin MUST be explicitly allowed here.
+
+ALLOWED_ORIGINS = [
+    # Production frontend
+    "https://ecg-sense-1.onrender.com",
+
+    # Local development
+    "http://localhost:5500",
+    "http://127.0.0.1:5500",
+
+    # Common Vite development ports
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+
+    # Local FastAPI/static development
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
+
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5500",
-        "http://127.0.0.1:5500",
-    ],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# ============================================================
+# STARTUP DEBUG
+# ============================================================
+
+@app.on_event("startup")
+async def startup_event():
+    print("=" * 70)
+    print("ECG-Sense API STARTED")
+    print(f"Version: {APP_VERSION}")
+    print("CORS allowed origins:")
+    for origin in ALLOWED_ORIGINS:
+        print(f"  - {origin}")
+    print("=" * 70)
 
 
 # ============================================================
@@ -106,33 +139,22 @@ app.add_middleware(
 def validate_record(
     record: str,
 ) -> str:
-    """
-    Validate a supported MIT-BIH record.
-    """
 
-    normalized = (
-        str(record)
-        .strip()
-    )
+    normalized = str(record).strip()
 
     if normalized not in SUPPORTED_RECORDS:
 
         raise HTTPException(
             status_code=400,
             detail={
-                "error":
-                    "UnsupportedRecord",
-
-                "message":
-                    (
-                        f"Record '{normalized}' "
-                        "is not supported."
-                    ),
-
-                "supported_records":
-                    list(
-                        SUPPORTED_RECORDS
-                    ),
+                "error": "UnsupportedRecord",
+                "message": (
+                    f"Record '{normalized}' "
+                    "is not supported."
+                ),
+                "supported_records": list(
+                    SUPPORTED_RECORDS
+                ),
             },
         )
 
@@ -142,166 +164,96 @@ def validate_record(
 def metrics_from_result(
     result: dict,
 ) -> dict:
-    """
-    Convert an internal ECG analysis object into
-    safe JSON-serializable API data.
-    """
 
-    sensitivity = result.get(
-        "sensitivity"
-    )
-
-    precision = result.get(
-        "precision"
-    )
-
-    f1 = result.get(
-        "f1"
-    )
+    sensitivity = result.get("sensitivity")
+    precision = result.get("precision")
+    f1 = result.get("f1")
 
     return {
-        "record":
+        "record": result.get("record"),
+
+        "reference_available": bool(
             result.get(
-                "record"
-            ),
+                "reference_available",
+                False,
+            )
+        ),
 
-        "reference_available":
-            bool(
-                result.get(
-                    "reference_available",
-                    False,
-                )
-            ),
+        "sampling_rate": (
+            int(result["sampling_rate"])
+            if result.get("sampling_rate") is not None
+            else None
+        ),
 
-        "sampling_rate":
-            (
-                int(
-                    result["sampling_rate"]
-                )
-                if result.get(
-                    "sampling_rate"
-                ) is not None
-                else None
-            ),
+        "signal_samples": (
+            int(result["signal_samples"])
+            if result.get("signal_samples") is not None
+            else None
+        ),
 
-        "signal_samples":
-            (
-                int(
-                    result["signal_samples"]
-                )
-                if result.get(
-                    "signal_samples"
-                ) is not None
-                else None
-            ),
+        "duration_seconds": (
+            float(result["duration_seconds"])
+            if result.get("duration_seconds") is not None
+            else None
+        ),
 
-        "duration_seconds":
-            (
-                float(
-                    result["duration_seconds"]
-                )
-                if result.get(
-                    "duration_seconds"
-                ) is not None
-                else None
-            ),
+        "reference_beats": (
+            int(result["reference_beats"])
+            if result.get("reference_beats") is not None
+            else None
+        ),
 
-        "reference_beats":
-            (
-                int(
-                    result["reference_beats"]
-                )
-                if result.get(
-                    "reference_beats"
-                ) is not None
-                else None
-            ),
+        "detected_peaks": (
+            int(result["detected_peaks"])
+            if result.get("detected_peaks") is not None
+            else None
+        ),
 
-        "detected_peaks":
-            (
-                int(
-                    result["detected_peaks"]
-                )
-                if result.get(
-                    "detected_peaks"
-                ) is not None
-                else None
-            ),
+        "tp": (
+            int(result["tp"])
+            if result.get("tp") is not None
+            else None
+        ),
 
-        "tp":
-            (
-                int(
-                    result["tp"]
-                )
-                if result.get(
-                    "tp"
-                ) is not None
-                else None
-            ),
+        "fp": (
+            int(result["fp"])
+            if result.get("fp") is not None
+            else None
+        ),
 
-        "fp":
-            (
-                int(
-                    result["fp"]
-                )
-                if result.get(
-                    "fp"
-                ) is not None
-                else None
-            ),
+        "fn": (
+            int(result["fn"])
+            if result.get("fn") is not None
+            else None
+        ),
 
-        "fn":
-            (
-                int(
-                    result["fn"]
-                )
-                if result.get(
-                    "fn"
-                ) is not None
-                else None
-            ),
+        "sensitivity": (
+            float(sensitivity * 100)
+            if sensitivity is not None
+            else None
+        ),
 
-        "sensitivity":
-            (
-                float(
-                    sensitivity * 100
-                )
-                if sensitivity is not None
-                else None
-            ),
+        "precision": (
+            float(precision * 100)
+            if precision is not None
+            else None
+        ),
 
-        "precision":
-            (
-                float(
-                    precision * 100
-                )
-                if precision is not None
-                else None
-            ),
+        "f1": (
+            float(f1 * 100)
+            if f1 is not None
+            else None
+        ),
 
-        "f1":
-            (
-                float(
-                    f1 * 100
-                )
-                if f1 is not None
-                else None
-            ),
-
-        "signal_quality":
-            result.get(
-                "signal_quality"
-            ),
+        "signal_quality": result.get(
+            "signal_quality"
+        ),
     }
 
 
 def ai_safe_report(
     result: dict,
 ):
-    """
-    Generate an AI explanation from verified
-    ECG-Sense measurements.
-    """
 
     try:
 
@@ -314,11 +266,8 @@ def ai_safe_report(
         raise HTTPException(
             status_code=503,
             detail={
-                "error":
-                    "AIUnavailable",
-
-                "message":
-                    str(exc),
+                "error": "AIUnavailable",
+                "message": str(exc),
             },
         ) from exc
 
@@ -326,9 +275,6 @@ def ai_safe_report(
 def saved_analysis_or_404(
     analysis_id: str,
 ):
-    """
-    Load a persistent analysis or return 404.
-    """
 
     result = get_analysis(
         analysis_id
@@ -339,14 +285,11 @@ def saved_analysis_or_404(
         raise HTTPException(
             status_code=404,
             detail={
-                "error":
-                    "AnalysisNotFound",
-
-                "message":
-                    (
-                        f"Analysis '{analysis_id}' "
-                        "does not exist."
-                    ),
+                "error": "AnalysisNotFound",
+                "message": (
+                    f"Analysis '{analysis_id}' "
+                    "does not exist."
+                ),
             },
         )
 
@@ -364,23 +307,13 @@ def saved_analysis_or_404(
 def root():
 
     return {
-        "service":
-            "ECG-Sense API",
-
-        "version":
-            APP_VERSION,
-
-        "status":
-            "online",
-
-        "docs":
-            "/docs",
-
-        "redoc":
-            "/redoc",
-
-        "health":
-            "/api/health",
+        "service": "ECG-Sense API",
+        "version": APP_VERSION,
+        "status": "online",
+        "docs": "/docs",
+        "redoc": "/redoc",
+        "health": "/api/health",
+        "frontend": "https://ecg-sense-1.onrender.com",
     }
 
 
@@ -395,19 +328,12 @@ def root():
 def health():
 
     return {
-        "status":
-            "ok",
-
-        "service":
-            "ECG-Sense API",
-
-        "version":
-            APP_VERSION,
-
-        "timestamp":
-            datetime.now(
-                timezone.utc
-            ).isoformat(),
+        "status": "ok",
+        "service": "ECG-Sense API",
+        "version": APP_VERSION,
+        "timestamp": datetime.now(
+            timezone.utc
+        ).isoformat(),
     }
 
 
@@ -422,43 +348,28 @@ def health():
 def api_info():
 
     return {
-        "service":
-            "ECG-Sense API",
-
-        "version":
-            APP_VERSION,
-
-        "platform":
-            "ECG-Sense",
-
-        "dataset":
-            "MIT-BIH Arrhythmia Database",
-
-        "supported_records":
-            list(
-                SUPPORTED_RECORDS
-            ),
-
-        "upload_formats":
-            [
-                "CSV",
-                "TXT",
-            ],
-
-        "max_upload_mb":
+        "service": "ECG-Sense API",
+        "version": APP_VERSION,
+        "platform": "ECG-Sense",
+        "dataset": "MIT-BIH Arrhythmia Database",
+        "supported_records": list(
+            SUPPORTED_RECORDS
+        ),
+        "upload_formats": [
+            "CSV",
+            "TXT",
+        ],
+        "max_upload_mb": (
             MAX_UPLOAD_BYTES
-            / (1024 * 1024),
-
-        "detector":
-            engine_info(),
-
-        "ai":
-            ai_service_info(),
+            / (1024 * 1024)
+        ),
+        "detector": engine_info(),
+        "ai": ai_service_info(),
     }
 
 
 # ============================================================
-# LIVE MIT-BIH SUMMARY
+# RECORD SUMMARY
 # ============================================================
 
 @app.get(
@@ -469,9 +380,7 @@ def record_summary(
     record: str,
 ):
 
-    record = validate_record(
-        record
-    )
+    record = validate_record(record)
 
     try:
 
@@ -480,13 +389,10 @@ def record_summary(
         )
 
         return {
-            "status":
-                "success",
-
-            "data":
-                metrics_from_result(
-                    result
-                ),
+            "status": "success",
+            "data": metrics_from_result(
+                result
+            ),
         }
 
     except FileNotFoundError as exc:
@@ -494,30 +400,29 @@ def record_summary(
         raise HTTPException(
             status_code=404,
             detail={
-                "error":
-                    "RecordNotFound",
-
-                "message":
-                    str(exc),
+                "error": "RecordNotFound",
+                "message": str(exc),
             },
         ) from exc
 
     except Exception as exc:
 
+        print(
+            f"[ECG-Sense] SUMMARY ERROR "
+            f"record={record}: {exc}"
+        )
+
         raise HTTPException(
             status_code=500,
             detail={
-                "error":
-                    "AnalysisFailed",
-
-                "message":
-                    str(exc),
+                "error": "AnalysisFailed",
+                "message": str(exc),
             },
         ) from exc
 
 
 # ============================================================
-# FULL MIT-BIH ANALYSIS
+# FULL RECORD ANALYSIS
 # ============================================================
 
 @app.get(
@@ -528,9 +433,7 @@ def record_analysis(
     record: str,
 ):
 
-    record = validate_record(
-        record
-    )
+    record = validate_record(record)
 
     try:
 
@@ -538,48 +441,38 @@ def record_analysis(
             record
         )
 
-        data = (
-            metrics_from_result(
-                result
-            )
+        data = metrics_from_result(
+            result
         )
 
         data.update(
             {
-                "reference_samples":
-                    result[
-                        "reference_samples"
-                    ],
+                "reference_samples": result[
+                    "reference_samples"
+                ],
 
-                "detected_samples":
-                    result[
-                        "detected_samples"
-                    ],
+                "detected_samples": result[
+                    "detected_samples"
+                ],
 
-                "matched_detected":
-                    result[
-                        "matched_detected"
-                    ],
+                "matched_detected": result[
+                    "matched_detected"
+                ],
 
-                "matched_reference":
-                    result[
-                        "matched_reference"
-                    ],
+                "matched_reference": result[
+                    "matched_reference"
+                ],
 
-                "peak_widths":
-                    result.get(
-                        "peak_widths",
-                        [],
-                    ),
+                "peak_widths": result.get(
+                    "peak_widths",
+                    [],
+                ),
             }
         )
 
         return {
-            "status":
-                "success",
-
-            "data":
-                data,
+            "status": "success",
+            "data": data,
         }
 
     except FileNotFoundError as exc:
@@ -587,30 +480,29 @@ def record_analysis(
         raise HTTPException(
             status_code=404,
             detail={
-                "error":
-                    "RecordNotFound",
-
-                "message":
-                    str(exc),
+                "error": "RecordNotFound",
+                "message": str(exc),
             },
         ) from exc
 
     except Exception as exc:
 
+        print(
+            f"[ECG-Sense] FULL ANALYSIS ERROR "
+            f"record={record}: {exc}"
+        )
+
         raise HTTPException(
             status_code=500,
             detail={
-                "error":
-                    "AnalysisFailed",
-
-                "message":
-                    str(exc),
+                "error": "AnalysisFailed",
+                "message": str(exc),
             },
         ) from exc
 
 
 # ============================================================
-# WAVEFORM WINDOW
+# WAVEFORM
 # ============================================================
 
 @app.get(
@@ -623,42 +515,28 @@ def record_waveform(
     start: float = Query(
         default=0.0,
         ge=0.0,
-        description=(
-            "Window start time in seconds."
-        ),
     ),
 
     duration: float = Query(
         default=10.0,
         gt=0.0,
         le=60.0,
-        description=(
-            "Window duration in seconds. "
-            "Maximum 60 seconds."
-        ),
     ),
 ):
 
-    record = validate_record(
-        record
-    )
+    record = validate_record(record)
 
     try:
 
-        waveform = (
-            get_waveform_window(
-                record=record,
-                start=start,
-                duration=duration,
-            )
+        waveform = get_waveform_window(
+            record=record,
+            start=start,
+            duration=duration,
         )
 
         return {
-            "status":
-                "success",
-
-            "data":
-                waveform,
+            "status": "success",
+            "data": waveform,
         }
 
     except ValueError as exc:
@@ -666,11 +544,8 @@ def record_waveform(
         raise HTTPException(
             status_code=400,
             detail={
-                "error":
-                    "InvalidWaveformRequest",
-
-                "message":
-                    str(exc),
+                "error": "InvalidWaveformRequest",
+                "message": str(exc),
             },
         ) from exc
 
@@ -679,30 +554,29 @@ def record_waveform(
         raise HTTPException(
             status_code=404,
             detail={
-                "error":
-                    "RecordNotFound",
-
-                "message":
-                    str(exc),
+                "error": "RecordNotFound",
+                "message": str(exc),
             },
         ) from exc
 
     except Exception as exc:
 
+        print(
+            f"[ECG-Sense] WAVEFORM ERROR "
+            f"record={record}: {exc}"
+        )
+
         raise HTTPException(
             status_code=500,
             detail={
-                "error":
-                    "WaveformFailed",
-
-                "message":
-                    str(exc),
+                "error": "WaveformFailed",
+                "message": str(exc),
             },
         ) from exc
 
 
 # ============================================================
-# MIT-BIH AI REPORT
+# AI RECORD REPORT
 # ============================================================
 
 @app.get(
@@ -713,9 +587,7 @@ def record_ai_report(
     record: str,
 ):
 
-    record = validate_record(
-        record
-    )
+    record = validate_record(record)
 
     try:
 
@@ -728,17 +600,12 @@ def record_ai_report(
         )
 
         return {
-            "status":
-                "success",
-
+            "status": "success",
             "data": {
-                "metrics":
-                    metrics_from_result(
-                        result
-                    ),
-
-                "ai":
-                    ai,
+                "metrics": metrics_from_result(
+                    result
+                ),
+                "ai": ai,
             },
         }
 
@@ -750,11 +617,8 @@ def record_ai_report(
         raise HTTPException(
             status_code=404,
             detail={
-                "error":
-                    "RecordNotFound",
-
-                "message":
-                    str(exc),
+                "error": "RecordNotFound",
+                "message": str(exc),
             },
         ) from exc
 
@@ -763,17 +627,14 @@ def record_ai_report(
         raise HTTPException(
             status_code=500,
             detail={
-                "error":
-                    "AIReportFailed",
-
-                "message":
-                    str(exc),
+                "error": "AIReportFailed",
+                "message": str(exc),
             },
         ) from exc
 
 
 # ============================================================
-# UPLOAD ECG
+# UPLOAD
 # ============================================================
 
 @app.post(
@@ -783,11 +644,6 @@ def record_ai_report(
 async def upload_ecg(
     file: UploadFile = File(...),
 ):
-    """
-    Upload CSV/TXT ECG data, process it with the
-    deterministic ECG engine, generate an analysis ID,
-    and persist the result to SQLite.
-    """
 
     filename = (
         file.filename
@@ -803,11 +659,8 @@ async def upload_ecg(
         raise HTTPException(
             status_code=400,
             detail={
-                "error":
-                    "UploadReadFailed",
-
-                "message":
-                    str(exc),
+                "error": "UploadReadFailed",
+                "message": str(exc),
             },
         ) from exc
 
@@ -816,30 +669,23 @@ async def upload_ecg(
         raise HTTPException(
             status_code=400,
             detail={
-                "error":
-                    "EmptyUpload",
-
-                "message":
-                    "Uploaded ECG file is empty.",
+                "error": "EmptyUpload",
+                "message": (
+                    "Uploaded ECG file is empty."
+                ),
             },
         )
 
-    if (
-        len(content)
-        > MAX_UPLOAD_BYTES
-    ):
+    if len(content) > MAX_UPLOAD_BYTES:
 
         raise HTTPException(
             status_code=413,
             detail={
-                "error":
-                    "FileTooLarge",
-
-                "message":
-                    (
-                        "Maximum ECG upload size "
-                        "is 10 MB."
-                    ),
+                "error": "FileTooLarge",
+                "message": (
+                    "Maximum ECG upload size "
+                    "is 10 MB."
+                ),
             },
         )
 
@@ -862,42 +708,35 @@ async def upload_ecg(
         raise HTTPException(
             status_code=400,
             detail={
-                "error":
-                    "InvalidECGFile",
-
-                "message":
-                    str(exc),
+                "error": "InvalidECGFile",
+                "message": str(exc),
             },
         ) from exc
 
     except Exception as exc:
 
+        print(
+            f"[ECG-Sense] UPLOAD ANALYSIS ERROR: "
+            f"{exc}"
+        )
+
         raise HTTPException(
             status_code=500,
             detail={
-                "error":
-                    "UploadAnalysisFailed",
-
-                "message":
-                    str(exc),
+                "error": "UploadAnalysisFailed",
+                "message": str(exc),
             },
         ) from exc
 
-    analysis_id = (
-        create_analysis_id()
-    )
+    analysis_id = create_analysis_id()
 
     try:
 
         saved = create_analysis(
             analysis_id=analysis_id,
-
             source_type="upload",
-
             source_name=filename,
-
             analysis=engine_result,
-
             ai_report=None,
         )
 
@@ -906,40 +745,28 @@ async def upload_ecg(
         raise HTTPException(
             status_code=500,
             detail={
-                "error":
-                    "StorageFailed",
-
-                "message":
-                    str(exc),
+                "error": "StorageFailed",
+                "message": str(exc),
             },
         ) from exc
 
     return {
-        "status":
-            "success",
-
+        "status": "success",
         "data": {
-            "analysis_id":
-                analysis_id,
-
-            "filename":
-                filename,
-
-            "analysis":
-                metrics_from_result(
-                    engine_result
-                ),
-
-            "created_at":
-                saved[
-                    "created_at"
-                ],
+            "analysis_id": analysis_id,
+            "filename": filename,
+            "analysis": metrics_from_result(
+                engine_result
+            ),
+            "created_at": saved[
+                "created_at"
+            ],
         },
     }
 
 
 # ============================================================
-# GENERATE AI REPORT FOR SAVED ANALYSIS
+# SAVED ANALYSIS AI REPORT
 # ============================================================
 
 @app.post(
@@ -949,10 +776,6 @@ async def upload_ecg(
 def generate_saved_ai_report(
     analysis_id: str,
 ):
-    """
-    Generate Gemini explanation from the persisted
-    deterministic ECG analysis.
-    """
 
     saved = saved_analysis_or_404(
         analysis_id
@@ -967,14 +790,11 @@ def generate_saved_ai_report(
         raise HTTPException(
             status_code=500,
             detail={
-                "error":
-                    "AnalysisDataMissing",
-
-                "message":
-                    (
-                        "Stored deterministic analysis "
-                        "data is unavailable."
-                    ),
+                "error": "AnalysisDataMissing",
+                "message": (
+                    "Stored deterministic analysis "
+                    "data is unavailable."
+                ),
             },
         )
 
@@ -994,18 +814,13 @@ def generate_saved_ai_report(
         raise HTTPException(
             status_code=500,
             detail={
-                "error":
-                    "AIStorageFailed",
-
-                "message":
-                    str(exc),
+                "error": "AIStorageFailed",
+                "message": str(exc),
             },
         ) from exc
 
     return {
-        "status":
-            "success",
-
+        "status": "success",
         "data": updated,
     }
 
@@ -1027,16 +842,13 @@ def get_saved_analysis(
     )
 
     return {
-        "status":
-            "success",
-
-        "data":
-            result,
+        "status": "success",
+        "data": result,
     }
 
 
 # ============================================================
-# ANALYSIS HISTORY
+# HISTORY
 # ============================================================
 
 @app.get(
@@ -1048,9 +860,6 @@ def analysis_history(
         default=20,
         ge=1,
         le=100,
-        description=(
-            "Maximum number of history records."
-        ),
     ),
 ):
 
@@ -1061,11 +870,8 @@ def analysis_history(
         )
 
         return {
-            "status":
-                "success",
-
-            "data":
-                history,
+            "status": "success",
+            "data": history,
         }
 
     except Exception as exc:
@@ -1073,11 +879,8 @@ def analysis_history(
         raise HTTPException(
             status_code=500,
             detail={
-                "error":
-                    "HistoryFailed",
-
-                "message":
-                    str(exc),
+                "error": "HistoryFailed",
+                "message": str(exc),
             },
         ) from exc
 
@@ -1096,10 +899,8 @@ def remove_analysis(
 
     try:
 
-        deleted = (
-            delete_analysis(
-                analysis_id
-            )
+        deleted = delete_analysis(
+            analysis_id
         )
 
     except Exception as exc:
@@ -1107,11 +908,8 @@ def remove_analysis(
         raise HTTPException(
             status_code=500,
             detail={
-                "error":
-                    "DeleteFailed",
-
-                "message":
-                    str(exc),
+                "error": "DeleteFailed",
+                "message": str(exc),
             },
         ) from exc
 
@@ -1120,26 +918,20 @@ def remove_analysis(
         raise HTTPException(
             status_code=404,
             detail={
-                "error":
-                    "AnalysisNotFound",
-
-                "message":
-                    (
-                        f"Analysis '{analysis_id}' "
-                        "does not exist."
-                    ),
+                "error": "AnalysisNotFound",
+                "message": (
+                    f"Analysis '{analysis_id}' "
+                    "does not exist."
+                ),
             },
         )
 
     return {
-        "status":
-            "success",
-
-        "message":
-            (
-                f"Analysis '{analysis_id}' "
-                "deleted successfully."
-            ),
+        "status": "success",
+        "message": (
+            f"Analysis '{analysis_id}' "
+            "deleted successfully."
+        ),
     }
 
 
@@ -1179,58 +971,35 @@ def benchmark():
                 result["fn"]
             )
 
-            item = (
-                metrics_from_result(
-                    result
-                )
+            item = metrics_from_result(
+                result
             )
 
-            item["status"] = (
-                "success"
-            )
+            item["status"] = "success"
 
-            records.append(
-                item
-            )
+            records.append(item)
 
         except Exception as exc:
 
             records.append(
                 {
-                    "record":
-                        record,
-
-                    "status":
-                        "error",
-
-                    "message":
-                        str(exc),
+                    "record": record,
+                    "status": "error",
+                    "message": str(exc),
                 }
             )
 
     overall_sensitivity = (
         total_tp
-        / (
-            total_tp
-            + total_fn
-        )
-        if (
-            total_tp
-            + total_fn
-        ) > 0
+        / (total_tp + total_fn)
+        if total_tp + total_fn > 0
         else 0.0
     )
 
     overall_precision = (
         total_tp
-        / (
-            total_tp
-            + total_fp
-        )
-        if (
-            total_tp
-            + total_fp
-        ) > 0
+        / (total_tp + total_fp)
+        if total_tp + total_fp > 0
         else 0.0
     )
 
@@ -1252,53 +1021,33 @@ def benchmark():
     successful_records = sum(
         1
         for item in records
-        if item["status"]
-        == "success"
+        if item["status"] == "success"
     )
 
     return {
-        "status":
-            "success",
-
+        "status": "success",
         "data": {
-            "records":
-                records,
+            "records": records,
 
             "successful_records":
                 successful_records,
 
             "total_records":
-                len(
-                    SUPPORTED_RECORDS
-                ),
+                len(SUPPORTED_RECORDS),
 
             "overall": {
-                "tp":
-                    total_tp,
-
-                "fp":
-                    total_fp,
-
-                "fn":
-                    total_fn,
+                "tp": total_tp,
+                "fp": total_fp,
+                "fn": total_fn,
 
                 "sensitivity":
-                    (
-                        overall_sensitivity
-                        * 100
-                    ),
+                    overall_sensitivity * 100,
 
                 "precision":
-                    (
-                        overall_precision
-                        * 100
-                    ),
+                    overall_precision * 100,
 
                 "f1":
-                    (
-                        overall_f1
-                        * 100
-                    ),
+                    overall_f1 * 100,
             },
         },
     }
