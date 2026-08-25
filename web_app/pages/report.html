@@ -13,7 +13,7 @@
 
     <meta
         name="description"
-        content="ECG-Sense user-facing ECG analysis report."
+        content="ECG-Sense ECG analysis report."
     >
 
     <title>ECG-Sense | Report</title>
@@ -30,23 +30,18 @@
 
 <div class="page">
 
-
-    <!-- ======================================================
+    <!-- =====================================================
          NAVIGATION
-         ====================================================== -->
+         ===================================================== -->
 
     <header class="nav">
 
         <a
             href="../index.html"
             class="logo"
-            aria-label="ECG-Sense home"
         >
 
-            <div
-                class="logo-mark"
-                aria-hidden="true"
-            >
+            <div class="logo-mark">
                 ♥
             </div>
 
@@ -65,10 +60,7 @@
         </a>
 
 
-        <nav
-            class="nav-links"
-            aria-label="Primary navigation"
-        >
+        <nav class="nav-links">
 
             <a href="../index.html">
                 Home
@@ -103,16 +95,11 @@
     </header>
 
 
-    <!-- ======================================================
-         MAIN
-         ====================================================== -->
-
     <main>
 
-
-        <!-- ==================================================
+        <!-- =================================================
              HERO
-             ================================================== -->
+             ================================================= -->
 
         <section class="hero">
 
@@ -142,9 +129,9 @@
         </section>
 
 
-        <!-- ==================================================
-             RESULT HEADER
-             ================================================== -->
+        <!-- =================================================
+             RESULT HEADER + MAIN METRICS
+             ================================================= -->
 
         <section class="content">
 
@@ -173,10 +160,6 @@
 
             </div>
 
-
-            <!-- ==================================================
-                 PRIMARY METRICS
-                 ================================================== -->
 
             <div class="metric-grid">
 
@@ -249,7 +232,7 @@
 
 
                     <div class="metric-caption">
-                        Based on available validation metrics
+                        Based on detection performance
                     </div>
 
                 </div>
@@ -283,9 +266,9 @@
         </section>
 
 
-        <!-- ==================================================
+        <!-- =================================================
              ECG WAVEFORM
-             ================================================== -->
+             ================================================= -->
 
         <section class="content">
 
@@ -306,18 +289,6 @@
                 </h2>
 
 
-                <p
-                    style="
-                        color:#64748b;
-                        margin-top:8px;
-                        font-size:.88rem;
-                    "
-                >
-                    Filtered ECG waveform with detected
-                    heartbeat peaks highlighted.
-                </p>
-
-
                 <canvas
                     id="userEcgCanvas"
                     style="
@@ -326,7 +297,6 @@
                         height:300px;
                         margin-top:18px;
                     "
-                    aria-label="ECG waveform with detected heartbeat peaks"
                 ></canvas>
 
             </div>
@@ -334,9 +304,9 @@
         </section>
 
 
-        <!-- ==================================================
-             UNDERSTANDING RESULT
-             ================================================== -->
+        <!-- =================================================
+             EXPLANATION
+             ================================================= -->
 
         <section class="content">
 
@@ -361,7 +331,6 @@
                     style="
                         color:#64748b;
                         max-width:800px;
-                        line-height:1.7;
                     "
                 >
 
@@ -369,9 +338,11 @@
                     and identifies heartbeat peaks using its
                     signal-processing engine.
 
-                    The displayed measurements describe the
-                    processed ECG recording and should not be
-                    interpreted as a medical diagnosis.
+                    The measurements shown here describe
+                    the ECG recording and detection performance.
+
+                    This is an engineering analysis,
+                    not a medical diagnosis.
 
                 </p>
 
@@ -380,9 +351,9 @@
         </section>
 
 
-        <!-- ==================================================
+        <!-- =================================================
              NEXT STEP
-             ================================================== -->
+             ================================================= -->
 
         <section class="content">
 
@@ -412,11 +383,10 @@
                     "
                 >
 
-
                     <button
                         id="viewDetailedReport"
-                        type="button"
                         class="primary-button"
+                        type="button"
                     >
                         View Detailed Report →
                     </button>
@@ -424,8 +394,8 @@
 
                     <button
                         id="newAnalysis"
-                        type="button"
                         class="secondary-button"
+                        type="button"
                     >
                         Analyze Another ECG
                     </button>
@@ -445,9 +415,9 @@
         </section>
 
 
-        <!-- ==================================================
-             RESPONSIBLE USE
-             ================================================== -->
+        <!-- =================================================
+             DISCLAIMER
+             ================================================= -->
 
         <section class="content">
 
@@ -459,6 +429,7 @@
 
                 ECG-Sense provides signal-processing
                 analysis and AI-assisted explanation.
+
                 It is not a substitute for evaluation
                 by a qualified healthcare professional.
 
@@ -467,9 +438,9 @@
         </section>
 
 
-        <!-- ==================================================
+        <!-- =================================================
              TECHNICAL SNAPSHOT
-             ================================================== -->
+             ================================================= -->
 
         <section class="content">
 
@@ -480,34 +451,7 @@
                 </span>
 
 
-                <h2
-                    style="
-                        margin-top:7px;
-                        font-size:1.45rem;
-                    "
-                >
-                    Validation and detection metrics
-                </h2>
-
-
-                <p
-                    style="
-                        color:#64748b;
-                        max-width:800px;
-                        line-height:1.6;
-                    "
-                >
-                    Benchmark records may contain reference
-                    annotations. Uploaded recordings without
-                    ground-truth annotations will show
-                    validation metrics as unavailable.
-                </p>
-
-
-                <div
-                    class="metric-grid"
-                    style="margin-top:20px;"
-                >
+                <div class="metric-grid">
 
 
                     <!-- REFERENCE BEATS -->
@@ -635,13 +579,12 @@
 
         </section>
 
-
     </main>
 
 
-    <!-- ======================================================
+    <!-- =====================================================
          FOOTER
-         ====================================================== -->
+         ===================================================== -->
 
     <footer
         style="
@@ -651,35 +594,19 @@
             text-align:center;
             color:#64748b;
             font-size:.72rem;
-            line-height:1.7;
         "
     >
 
-        <strong
-            style="
-                color:#334155;
-                font-weight:850;
-            "
-        >
-            ECG-Sense
-        </strong>
-
-        · User-facing ECG analysis report
-
-        <br>
-
-        Research prototype ·
-        Deterministic DSP ·
-        Transparent validation
+        ECG-Sense · User-facing ECG analysis report
 
     </footer>
 
 </div>
 
 
-<!-- ==========================================================
+<!-- =========================================================
      GLOBAL STATUS
-     ========================================================== -->
+     ========================================================= -->
 
 <div
     id="globalStatus"
@@ -688,12 +615,15 @@
 ></div>
 
 
-<!-- ==========================================================
+<!-- =========================================================
      JAVASCRIPT
-     IMPORTANT: LOAD IN THIS ORDER
-     ========================================================== -->
+     IMPORTANT ORDER:
+     common → analyze → report
+     ========================================================= -->
 
 <script src="../assets/common.js"></script>
+
+<script src="../assets/analyze.js"></script>
 
 <script src="../assets/report.js"></script>
 
