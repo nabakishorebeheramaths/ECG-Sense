@@ -6,3 +6,4 @@ scipy
 pandas
 wfdb
 google-generativeai
+google-genai
