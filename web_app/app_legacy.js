@@ -8,7 +8,7 @@
     ============================================================
 */
 
-const API_BASE = "http://127.0.0.1:8000/api";
+const API_BASE = "https://ecg-sense.onrender.com/api";
 
 const state = {
     record: "102",
