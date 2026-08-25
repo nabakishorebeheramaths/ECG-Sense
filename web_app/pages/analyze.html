@@ -20,12 +20,321 @@
         rel="stylesheet"
         href="../assets/app.css"
     >
+
+    <style>
+
+        /* =====================================================
+           PREMIUM ANALYSIS PAGE
+           ===================================================== */
+
+        .analysis-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .analysis-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            min-height: 46px;
+            padding: 0 20px;
+
+            border-radius: 14px;
+
+            text-decoration: none;
+
+            font-weight: 700;
+            font-size: .88rem;
+
+            letter-spacing: .01em;
+
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease,
+                border-color .2s ease,
+                background .2s ease;
+        }
+
+        .analysis-action:hover {
+            transform: translateY(-2px);
+        }
+
+        .analysis-action:active {
+            transform: translateY(0);
+        }
+
+        .analysis-action-primary {
+            color: #ffffff;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #7c3aed
+                );
+
+            border: 1px solid
+                rgba(255,255,255,.16);
+
+            box-shadow:
+                0 12px 28px
+                rgba(37,99,235,.24);
+        }
+
+        .analysis-action-primary:hover {
+            box-shadow:
+                0 16px 34px
+                rgba(37,99,235,.34);
+        }
+
+        .analysis-action-secondary {
+            color: #0f172a;
+
+            background:
+                rgba(255,255,255,.78);
+
+            border: 1px solid
+                rgba(15,23,42,.10);
+
+            box-shadow:
+                0 8px 20px
+                rgba(15,23,42,.06);
+
+            backdrop-filter: blur(12px);
+        }
+
+        .analysis-action-secondary:hover {
+            border-color:
+                rgba(37,99,235,.30);
+
+            box-shadow:
+                0 12px 26px
+                rgba(15,23,42,.10);
+        }
+
+        .analysis-action-dark {
+            color: #ffffff;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #0f172a,
+                    #1e293b
+                );
+
+            border: 1px solid
+                rgba(255,255,255,.08);
+
+            box-shadow:
+                0 10px 24px
+                rgba(15,23,42,.18);
+        }
+
+        .analysis-action-dark:hover {
+            box-shadow:
+                0 15px 30px
+                rgba(15,23,42,.26);
+        }
+
+        .action-icon {
+            font-size: 1rem;
+            line-height: 1;
+        }
+
+        .analysis-header-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .analysis-header-card::after {
+            content: "";
+
+            position: absolute;
+
+            width: 180px;
+            height: 180px;
+
+            right: -80px;
+            top: -90px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(59,130,246,.14),
+                    transparent 68%
+                );
+
+            pointer-events: none;
+        }
+
+        .analysis-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 8px 12px;
+
+            border-radius: 999px;
+
+            font-size: .72rem;
+            font-weight: 800;
+
+            letter-spacing: .06em;
+            text-transform: uppercase;
+
+            background:
+                rgba(34,197,94,.08);
+
+            color: #15803d;
+
+            border: 1px solid
+                rgba(34,197,94,.16);
+        }
+
+        .analysis-status-dot {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: #22c55e;
+
+            box-shadow:
+                0 0 0 4px
+                rgba(34,197,94,.10);
+        }
+
+        .waveform-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .waveform-card::before {
+            content: "";
+
+            position: absolute;
+
+            width: 260px;
+            height: 260px;
+
+            right: -120px;
+            bottom: -160px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(124,58,237,.10),
+                    transparent 68%
+                );
+
+            pointer-events: none;
+        }
+
+        .waveform-heading {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: flex-start;
+
+            gap: 16px;
+
+            flex-wrap: wrap;
+        }
+
+        .waveform-title {
+            margin-top: 7px;
+
+            font-size: 1.5rem;
+
+            letter-spacing: -.02em;
+        }
+
+        .canvas-wrapper {
+            position: relative;
+
+            width: 100%;
+
+            margin-top: 20px;
+
+            padding: 4px;
+
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(37,99,235,.07),
+                    rgba(124,58,237,.05)
+                );
+
+            border: 1px solid
+                rgba(15,23,42,.06);
+        }
+
+        #ecgCanvas {
+            display: block;
+
+            width: 100%;
+            height: 300px;
+
+            border-radius: 14px;
+
+            background:
+                rgba(248,250,252,.72);
+        }
+
+        .analysis-footer-note {
+            text-align: center;
+
+            margin-top: 18px;
+
+            color: #64748b;
+
+            font-size: .74rem;
+        }
+
+        @media (max-width: 700px) {
+
+            .analysis-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .analysis-action {
+                width: 100%;
+            }
+
+            #ecgCanvas {
+                height: 240px;
+            }
+
+            .waveform-title {
+                font-size: 1.25rem;
+            }
+        }
+
+    </style>
+
 </head>
 
 
 <body>
 
 <div class="page">
+
+
+    <!-- =====================================================
+         NAVIGATION
+         ===================================================== -->
 
     <header class="nav">
 
@@ -39,11 +348,19 @@
             </div>
 
             <div class="logo-text">
-                <strong>ECG-Sense</strong>
-                <span>ECG intelligence platform</span>
+
+                <strong>
+                    ECG-Sense
+                </strong>
+
+                <span>
+                    ECG intelligence platform
+                </span>
+
             </div>
 
         </a>
+
 
         <nav class="nav-links">
 
@@ -51,8 +368,10 @@
                 Home
             </a>
 
+            <!-- IMPORTANT:
+                 Directly opens sample analysis -->
             <a
-                href="upload.html"
+                href="analyze.html?mode=sample&record=102"
                 aria-current="page"
             >
                 Analyze
@@ -72,6 +391,7 @@
 
         </nav>
 
+
         <a
             href="upload.html"
             class="nav-button"
@@ -82,7 +402,15 @@
     </header>
 
 
+
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
+
     <main>
+
+
+        <!-- HERO -->
 
         <section class="hero">
 
@@ -104,10 +432,15 @@
         </section>
 
 
+
+        <!-- =================================================
+             ANALYSIS SUMMARY
+             ================================================= -->
+
         <section class="content">
 
             <div
-                class="report-header"
+                class="report-header analysis-header-card"
             >
 
                 <div>
@@ -127,7 +460,8 @@
                         id="analysisDescription"
                         class="content-description"
                     >
-                        ECG waveform and detected heartbeat peaks.
+                        ECG waveform and detected
+                        heartbeat peaks.
                     </p>
 
                 </div>
@@ -135,44 +469,66 @@
 
                 <div
                     id="analysisId"
-                    class="report-badge"
+                    class="analysis-status-badge"
                 >
+
+                    <span
+                        class="analysis-status-dot"
+                    ></span>
+
                     Ready
+
                 </div>
 
             </div>
 
 
+
+            <!-- METRICS -->
+
             <div class="metric-grid">
 
+
                 <div class="metric-card">
+
                     <div class="metric-label">
                         Reference Beats
                     </div>
+
                     <div
                         id="referenceBeats"
                         class="metric-value"
                     >
                         —
                     </div>
+
                 </div>
 
+
+
                 <div class="metric-card">
+
                     <div class="metric-label">
                         Detected Peaks
                     </div>
+
                     <div
                         id="detectedPeaks"
                         class="metric-value"
                     >
                         —
                     </div>
+
                 </div>
 
+
+
                 <div class="metric-card">
+
                     <div class="metric-label">
                         Signal Quality
                     </div>
+
                     <div
                         id="signalQuality"
                         class="metric-value"
@@ -180,12 +536,17 @@
                     >
                         —
                     </div>
+
                 </div>
 
+
+
                 <div class="metric-card">
+
                     <div class="metric-label">
                         Duration
                     </div>
+
                     <div
                         id="duration"
                         class="metric-value"
@@ -193,26 +554,26 @@
                     >
                         —
                     </div>
+
                 </div>
+
 
             </div>
 
         </section>
 
 
+
+        <!-- =================================================
+             ECG WAVEFORM
+             ================================================= -->
+
         <section class="content">
 
             <div class="waveform-card">
 
-                <div
-                    style="
-                        display:flex;
-                        justify-content:space-between;
-                        gap:16px;
-                        align-items:flex-start;
-                        flex-wrap:wrap;
-                    "
-                >
+
+                <div class="waveform-heading">
 
                     <div>
 
@@ -220,78 +581,118 @@
                             ECG SIGNAL
                         </span>
 
-                        <h2
-                            style="
-                                margin-top:7px;
-                                font-size:1.5rem;
-                            "
-                        >
+                        <h2 class="waveform-title">
                             Waveform & detected peaks
                         </h2>
 
                     </div>
 
-                    <span
-                        class="report-badge"
-                    >
+
+                    <span class="report-badge">
                         Signal Processing
                     </span>
 
                 </div>
 
 
-                <canvas
-                    id="ecgCanvas"
-                    style="
-                        width:100%;
-                        height:300px;
-                        margin-top:20px;
-                    "
-                    aria-label="ECG waveform"
-                ></canvas>
+
+                <div class="canvas-wrapper">
+
+                    <canvas
+                        id="ecgCanvas"
+                        aria-label="ECG waveform"
+                    ></canvas>
+
+                </div>
+
+
+                <div class="analysis-footer-note">
+                    Filtered ECG signal · detected
+                    heartbeat peaks
+                </div>
+
 
             </div>
 
         </section>
 
+
+
+        <!-- =================================================
+             ACTION BUTTONS
+             ================================================= -->
 
         <section class="content">
 
-            <div
-                style="
-                    display:flex;
-                    gap:10px;
-                    flex-wrap:wrap;
-                "
-            >
+            <div class="analysis-actions">
+
+
+                <!-- VIEW REPORT -->
 
                 <a
-                    href="report.html"
-                    class="primary-button"
+                    href="report.html?record=102"
+                    class="analysis-action analysis-action-primary"
                 >
-                    View Report →
+
+                    <span class="action-icon">
+                        ▣
+                    </span>
+
+                    View Full Report
+
+                    <span>
+                        →
+                    </span>
+
                 </a>
 
+
+
+                <!-- ADVANCED -->
+
                 <a
-                    href="advanced.html"
-                    class="secondary-button"
+                    href="advanced.html?record=102"
+                    class="analysis-action analysis-action-dark"
                 >
+
+                    <span class="action-icon">
+                        ◈
+                    </span>
+
                     Advanced Analysis
+
                 </a>
+
+
+
+                <!-- NEW -->
 
                 <a
                     href="upload.html"
-                    class="secondary-button"
+                    class="analysis-action analysis-action-secondary"
                 >
+
+                    <span class="action-icon">
+                        ＋
+                    </span>
+
                     Analyze Another
+
                 </a>
+
 
             </div>
 
         </section>
 
+
     </main>
 
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
 
     <footer
         style="
@@ -303,10 +704,14 @@
             font-size:.72rem;
         "
     >
+
         ECG-Sense · Deterministic ECG signal processing
+
     </footer>
 
+
 </div>
+
 
 
 <div
@@ -316,8 +721,15 @@
 ></div>
 
 
+
+<!-- =========================================================
+     JAVASCRIPT
+     ========================================================= -->
+
 <script src="../assets/common.js"></script>
+
 <script src="../assets/analyze.js"></script>
+
 
 </body>
 
