@@ -2,7 +2,7 @@
 
 /* ============================================================
    ECG-SENSE REPORT PAGE
-   COMPLETE DEBUG + WORKING VERSION
+   COMPLETE WORKING + DEBUG + WAVEFORM VERSION
    ============================================================ */
 
 console.log("==================================================");
@@ -50,275 +50,623 @@ window.addEventListener(
 
 
 /* ============================================================
-   DOM READY
+   SAFE DOM HELPERS
    ============================================================ */
 
-async function initializeReport() {
+function safeSetText(id, value) {
+
+    const element = document.getElementById(id);
+
+    if (!element) {
+
+        console.warn(
+            `[ECG-Sense Report] Element #${id} NOT FOUND`
+        );
+
+        return false;
+    }
+
+    element.textContent =
+        value === null ||
+        value === undefined
+            ? "—"
+            : String(value);
+
+    return true;
+}
+
+
+function safeFormatNumber(value) {
+
+    if (
+        value === null ||
+        value === undefined ||
+        value === ""
+    ) {
+        return "—";
+    }
+
+    const number = Number(value);
+
+    if (!Number.isFinite(number)) {
+        return String(value);
+    }
+
+    return number.toLocaleString(
+        "en-IN",
+        {
+            maximumFractionDigits: 0
+        }
+    );
+}
+
+
+function safeFormatPercent(value) {
+
+    if (
+        value === null ||
+        value === undefined ||
+        value === ""
+    ) {
+        return "—";
+    }
+
+    const number = Number(value);
+
+    if (!Number.isFinite(number)) {
+        return String(value);
+    }
+
+    return `${number.toFixed(2)}%`;
+}
+
+
+/* ============================================================
+   FIND REPORT CANVAS
+   ============================================================ */
+
+function getReportCanvas() {
+
+    const canvas =
+        document.getElementById("userEcgCanvas") ||
+        document.getElementById("ecgCanvas") ||
+        document.querySelector("canvas");
 
     console.log(
-        "[ECG-Sense Report] initializeReport() STARTED"
+        "[ECG-Sense Report] Canvas found:",
+        canvas
+    );
+
+    return canvas;
+}
+
+
+/* ============================================================
+   ECG WAVEFORM DRAWER
+   ============================================================ */
+
+function drawReportWaveform(
+    canvas,
+    signal,
+    peaks
+) {
+
+    console.log(
+        "=================================================="
+    );
+
+    console.log(
+        "[ECG-Sense Report] drawReportWaveform() START"
+    );
+
+    console.log(
+        "[ECG-Sense Report] Canvas:",
+        canvas
+    );
+
+    console.log(
+        "[ECG-Sense Report] Signal:",
+        signal
+    );
+
+    console.log(
+        "[ECG-Sense Report] Signal length:",
+        Array.isArray(signal)
+            ? signal.length
+            : "NOT ARRAY"
+    );
+
+    console.log(
+        "[ECG-Sense Report] Peaks:",
+        peaks
+    );
+
+    console.log(
+        "[ECG-Sense Report] Peak count:",
+        Array.isArray(peaks)
+            ? peaks.length
+            : "NOT ARRAY"
     );
 
 
-    try {
+    /* --------------------------------------------------------
+       VALIDATION
+       -------------------------------------------------------- */
 
-        /* ----------------------------------------------------
-           CHECK REQUIRED GLOBAL FUNCTIONS
-           ---------------------------------------------------- */
+    if (!canvas) {
 
-        console.log(
-            "[ECG-Sense Report] Checking dependencies..."
+        console.error(
+            "[ECG-Sense Report] Cannot draw waveform: canvas missing."
         );
 
-        console.log(
-            "[ECG-Sense Report] ECG_APP:",
-            typeof ECG_APP !== "undefined"
-                ? ECG_APP
-                : "MISSING"
+        return false;
+    }
+
+
+    if (
+        !Array.isArray(signal) ||
+        signal.length < 2
+    ) {
+
+        console.error(
+            "[ECG-Sense Report] Cannot draw waveform: signal invalid."
         );
 
-        console.log(
-            "[ECG-Sense Report] apiGet:",
-            typeof apiGet
+        return false;
+    }
+
+
+    /* --------------------------------------------------------
+       CANVAS CONTEXT
+       -------------------------------------------------------- */
+
+    const ctx =
+        canvas.getContext("2d");
+
+    if (!ctx) {
+
+        console.error(
+            "[ECG-Sense Report] Canvas 2D context unavailable."
         );
 
-        console.log(
-            "[ECG-Sense Report] getParam:",
-            typeof getParam
-        );
-
-        console.log(
-            "[ECG-Sense Report] setText:",
-            typeof setText
-        );
-
-        console.log(
-            "[ECG-Sense Report] formatNumber:",
-            typeof formatNumber
-        );
-
-        console.log(
-            "[ECG-Sense Report] formatPercent:",
-            typeof formatPercent
-        );
-
-        console.log(
-            "[ECG-Sense Report] drawWaveformCanvas:",
-            typeof drawWaveformCanvas
-        );
+        return false;
+    }
 
 
-        /* ----------------------------------------------------
-           REQUIRED DEPENDENCY CHECK
-           ---------------------------------------------------- */
+    /* --------------------------------------------------------
+       CANVAS SIZE
+       -------------------------------------------------------- */
 
-        const requiredFunctions = [
-            "apiGet",
-            "getParam",
-            "setText",
-            "formatNumber",
-            "formatPercent"
-        ];
+    const rect =
+        canvas.getBoundingClientRect();
+
+    let width =
+        Math.floor(rect.width);
+
+    if (
+        !Number.isFinite(width) ||
+        width < 300
+    ) {
+        width = 900;
+    }
+
+    const height = 320;
+
+    const dpr =
+        window.devicePixelRatio || 1;
 
 
-        for (
-            const functionName
-            of requiredFunctions
+    canvas.width =
+        Math.floor(width * dpr);
+
+    canvas.height =
+        Math.floor(height * dpr);
+
+    canvas.style.width =
+        "100%";
+
+    canvas.style.height =
+        `${height}px`;
+
+
+    ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
+
+
+    /* --------------------------------------------------------
+       CLEAR
+       -------------------------------------------------------- */
+
+    ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    /* --------------------------------------------------------
+       BACKGROUND
+       -------------------------------------------------------- */
+
+    ctx.fillStyle =
+        "#020617";
+
+    ctx.fillRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    /* --------------------------------------------------------
+       FIND MIN/MAX
+       -------------------------------------------------------- */
+
+    let min =
+        Infinity;
+
+    let max =
+        -Infinity;
+
+
+    for (
+        let i = 0;
+        i < signal.length;
+        i++
+    ) {
+
+        const value =
+            Number(signal[i]);
+
+        if (
+            !Number.isFinite(value)
         ) {
+            continue;
+        }
 
-            if (
-                typeof window[functionName] ===
-                "undefined"
-            ) {
+        if (value < min) {
+            min = value;
+        }
 
-                console.error(
-                    `[ECG-Sense Report] MISSING FUNCTION: ${functionName}`
-                );
-            }
+        if (value > max) {
+            max = value;
+        }
+    }
+
+
+    if (
+        !Number.isFinite(min) ||
+        !Number.isFinite(max)
+    ) {
+
+        console.error(
+            "[ECG-Sense Report] Signal contains no valid numeric values."
+        );
+
+        return false;
+    }
+
+
+    if (max === min) {
+
+        max =
+            min + 1;
+    }
+
+
+    console.log(
+        "[ECG-Sense Report] Signal minimum:",
+        min
+    );
+
+    console.log(
+        "[ECG-Sense Report] Signal maximum:",
+        max
+    );
+
+
+    /* --------------------------------------------------------
+       GRID
+       -------------------------------------------------------- */
+
+    ctx.strokeStyle =
+        "rgba(148,163,184,0.14)";
+
+    ctx.lineWidth = 1;
+
+
+    const gridX = 40;
+    const gridY = 32;
+
+
+    for (
+        let x = 0;
+        x <= width;
+        x += gridX
+    ) {
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            x,
+            0
+        );
+
+        ctx.lineTo(
+            x,
+            height
+        );
+
+        ctx.stroke();
+    }
+
+
+    for (
+        let y = 0;
+        y <= height;
+        y += gridY
+    ) {
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            y
+        );
+
+        ctx.lineTo(
+            width,
+            y
+        );
+
+        ctx.stroke();
+    }
+
+
+    /* --------------------------------------------------------
+       ECG SIGNAL
+       -------------------------------------------------------- */
+
+    ctx.strokeStyle =
+        "#22c55e";
+
+    ctx.lineWidth =
+        1.6;
+
+    ctx.lineJoin =
+        "round";
+
+    ctx.lineCap =
+        "round";
+
+
+    ctx.beginPath();
+
+
+    let started =
+        false;
+
+
+    for (
+        let i = 0;
+        i < signal.length;
+        i++
+    ) {
+
+        const value =
+            Number(signal[i]);
+
+        if (
+            !Number.isFinite(value)
+        ) {
+            continue;
         }
 
 
-        /* ----------------------------------------------------
-           READ RECORD PARAMETER
-           ---------------------------------------------------- */
-
-        const record =
-            typeof getParam === "function"
-                ? getParam("record")
-                : null;
+        const x =
+            (i / (signal.length - 1))
+            * width;
 
 
-        console.log(
-            "[ECG-Sense Report] Record parameter:",
-            record
-        );
+        const normalized =
+            (value - min)
+            / (max - min);
 
 
-        /* ----------------------------------------------------
-           READ SAVED ANALYSIS
-           ---------------------------------------------------- */
+        const y =
+            height -
+            20 -
+            normalized *
+            (height - 40);
 
-        let saved = null;
 
+        if (!started) {
 
-        if (
-            typeof loadCurrentAnalysis ===
-            "function"
-        ) {
+            ctx.moveTo(
+                x,
+                y
+            );
 
-            saved =
-                loadCurrentAnalysis();
+            started = true;
 
         } else {
 
-            console.warn(
-                "[ECG-Sense Report] loadCurrentAnalysis() unavailable."
-            );
-        }
-
-
-        console.log(
-            "[ECG-Sense Report] Saved analysis:",
-            saved
-        );
-
-
-        /* ----------------------------------------------------
-           UPLOADED ANALYSIS
-           ---------------------------------------------------- */
-
-        if (
-            saved &&
-            saved.engine
-        ) {
-
-            console.log(
-                "[ECG-Sense Report] Upload analysis detected."
-            );
-
-            renderUploadReport(
-                saved
-            );
-
-            console.log(
-                "[ECG-Sense Report] Upload report rendered."
-            );
-
-            return;
-        }
-
-
-        /* ----------------------------------------------------
-           RECORD REPORT
-           ---------------------------------------------------- */
-
-        if (record) {
-
-            console.log(
-                `[ECG-Sense Report] Loading MIT-BIH record: ${record}`
-            );
-
-            await loadRecordReport(
-                record
-            );
-
-            console.log(
-                "[ECG-Sense Report] Record report finished."
-            );
-
-            return;
-        }
-
-
-        /* ----------------------------------------------------
-           SAVED SUMMARY
-           ---------------------------------------------------- */
-
-        let summary = null;
-
-
-        if (
-            typeof loadSession ===
-            "function" &&
-            typeof ECG_APP !==
-            "undefined"
-        ) {
-
-            summary =
-                loadSession(
-                    ECG_APP.storage.currentSummary
-                );
-        }
-
-
-        console.log(
-            "[ECG-Sense Report] Saved summary:",
-            summary
-        );
-
-
-        if (summary) {
-
-            console.log(
-                "[ECG-Sense Report] Rendering saved summary."
-            );
-
-            renderSummary(
-                summary
-            );
-
-        } else {
-
-            console.warn(
-                "[ECG-Sense Report] No analysis data found."
-            );
-
-            showEmptyState();
-        }
-
-
-    } catch (error) {
-
-        console.error(
-            "=================================================="
-        );
-
-        console.error(
-            "[ECG-Sense Report] INITIALIZATION FAILED"
-        );
-
-        console.error(
-            "Error:",
-            error
-        );
-
-        console.error(
-            "Message:",
-            error?.message
-        );
-
-        console.error(
-            "Stack:",
-            error?.stack
-        );
-
-        console.error(
-            "=================================================="
-        );
-
-
-        if (
-            typeof notify ===
-            "function"
-        ) {
-
-            notify(
-                "Report initialization failed. Check browser console.",
-                "error",
-                8000
+            ctx.lineTo(
+                x,
+                y
             );
         }
     }
+
+
+    ctx.stroke();
+
+
+    /* --------------------------------------------------------
+       DETECTED PEAKS
+       -------------------------------------------------------- */
+
+    if (
+        Array.isArray(peaks) &&
+        peaks.length > 0
+    ) {
+
+        console.log(
+            "[ECG-Sense Report] Drawing",
+            peaks.length,
+            "detected peaks."
+        );
+
+
+        ctx.fillStyle =
+            "#ef4444";
+
+
+        for (
+            const peak of peaks
+        ) {
+
+            /*
+             * Backend may return:
+             * 12
+             *
+             * or:
+             * {index: 12}
+             *
+             * or:
+             * {sample: 12}
+             */
+
+            let index;
+
+
+            if (
+                typeof peak === "object" &&
+                peak !== null
+            ) {
+
+                index =
+                    Number(
+                        peak.index ??
+                        peak.sample ??
+                        peak.position ??
+                        peak.peak
+                    );
+
+            } else {
+
+                index =
+                    Number(peak);
+            }
+
+
+            if (
+                !Number.isFinite(index)
+            ) {
+                continue;
+            }
+
+
+            index =
+                Math.round(index);
+
+
+            if (
+                index < 0 ||
+                index >= signal.length
+            ) {
+                continue;
+            }
+
+
+            const value =
+                Number(signal[index]);
+
+
+            if (
+                !Number.isFinite(value)
+            ) {
+                continue;
+            }
+
+
+            const x =
+                (index / (signal.length - 1))
+                * width;
+
+
+            const normalized =
+                (value - min)
+                / (max - min);
+
+
+            const y =
+                height -
+                20 -
+                normalized *
+                (height - 40);
+
+
+            ctx.beginPath();
+
+            ctx.arc(
+                x,
+                y,
+                4,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+        }
+    }
+
+
+    /* --------------------------------------------------------
+       LEGEND
+       -------------------------------------------------------- */
+
+    ctx.font =
+        "12px Arial";
+
+    ctx.fillStyle =
+        "#22c55e";
+
+    ctx.fillText(
+        "ECG Signal",
+        16,
+        22
+    );
+
+
+    ctx.fillStyle =
+        "#ef4444";
+
+    ctx.fillText(
+        "Detected Peaks",
+        100,
+        22
+    );
+
+
+    console.log(
+        "[ECG-Sense Report] drawReportWaveform() COMPLETE"
+    );
+
+    console.log(
+        "=================================================="
+    );
+
+
+    return true;
 }
 
 
@@ -331,12 +679,27 @@ async function loadRecordReport(
 ) {
 
     console.log(
-        "[ECG-Sense Report] loadRecordReport()",
+        "[ECG-Sense Report] loadRecordReport():",
         record
     );
 
 
+    if (
+        typeof apiGet !==
+        "function"
+    ) {
+
+        throw new Error(
+            "apiGet() is not available."
+        );
+    }
+
+
     try {
+
+        /* ----------------------------------------------------
+           SUMMARY
+           ---------------------------------------------------- */
 
         const summaryEndpoint =
             `/records/${encodeURIComponent(
@@ -373,19 +736,18 @@ async function loadRecordReport(
         }
 
 
+        const summary =
+            response.data;
+
+
         console.log(
             "[ECG-Sense Report] Summary data:",
-            response.data
+            summary
         );
 
 
         renderSummary(
-            response.data
-        );
-
-
-        console.log(
-            "[ECG-Sense Report] Summary rendered successfully."
+            summary
         );
 
 
@@ -394,149 +756,187 @@ async function loadRecordReport(
            ---------------------------------------------------- */
 
         const canvas =
-            document.getElementById(
-                "userEcgCanvas"
-            ) ||
-            document.getElementById(
-                "ecgCanvas"
-            );
-
-
-        console.log(
-            "[ECG-Sense Report] Canvas:",
-            canvas
-        );
+            getReportCanvas();
 
 
         if (!canvas) {
 
-            console.error(
-                "[ECG-Sense Report] ECG canvas NOT FOUND."
+            throw new Error(
+                "ECG canvas not found on report page."
             );
-
-        } else {
-
-            const waveformEndpoint =
-                `/records/${encodeURIComponent(
-                    record
-                )}/waveform?start=0&duration=10`;
+        }
 
 
-            console.log(
-                "[ECG-Sense Report] WAVEFORM API:",
+        const waveformEndpoint =
+            `/records/${encodeURIComponent(
+                record
+            )}/waveform?start=0&duration=10`;
+
+
+        console.log(
+            "[ECG-Sense Report] WAVEFORM API:",
+            waveformEndpoint
+        );
+
+
+        const waveform =
+            await apiGet(
                 waveformEndpoint
             );
 
 
-            const waveform =
-                await apiGet(
-                    waveformEndpoint
-                );
+        console.log(
+            "[ECG-Sense Report] WAVEFORM RESPONSE:",
+            waveform
+        );
 
 
-            console.log(
-                "[ECG-Sense Report] WAVEFORM RESPONSE:",
-                waveform
+        if (
+            !waveform ||
+            !waveform.data
+        ) {
+
+            throw new Error(
+                "Backend returned empty waveform response."
             );
+        }
 
 
-            if (
-                !waveform ||
-                !waveform.data
-            ) {
-
-                throw new Error(
-                    "Backend returned empty waveform response."
-                );
-            }
+        const signal =
+            Array.isArray(
+                waveform.data.signal
+            )
+                ? waveform.data.signal
+                : [];
 
 
-            console.log(
-                "[ECG-Sense Report] Signal length:",
-                Array.isArray(
-                    waveform.data.signal
-                )
-                    ? waveform.data.signal.length
-                    : "NOT ARRAY"
-            );
-
-
-            console.log(
-                "[ECG-Sense Report] Detected peaks:",
+        const peaks =
+            Array.isArray(
                 waveform.data.detected_peaks
+            )
+                ? waveform.data.detected_peaks
+                : [];
+
+
+        console.log(
+            "[ECG-Sense Report] Signal length:",
+            signal.length
+        );
+
+
+        console.log(
+            "[ECG-Sense Report] Detected peaks:",
+            peaks
+        );
+
+
+        if (
+            signal.length === 0
+        ) {
+
+            throw new Error(
+                "Backend waveform contains no signal samples."
             );
-
-
-            if (
-                typeof drawWaveformCanvas ===
-                "function"
-            ) {
-
-                drawWaveformCanvas(
-                    canvas,
-                    {
-                        signal:
-                            waveform.data.signal ||
-                            [],
-
-                        peaks:
-                            waveform.data.detected_peaks ||
-                            []
-                    }
-                );
-
-
-                console.log(
-                    "[ECG-Sense Report] Waveform rendered successfully."
-                );
-
-            } else {
-
-                console.error(
-                    "[ECG-Sense Report] drawWaveformCanvas() NOT FOUND."
-                );
-            }
         }
 
 
         /* ----------------------------------------------------
-           SAVE SUMMARY
+           DRAW GRAPH
+           ---------------------------------------------------- */
+
+        const drawn =
+            drawReportWaveform(
+                canvas,
+                signal,
+                peaks
+            );
+
+
+        if (!drawn) {
+
+            throw new Error(
+                "Waveform drawing failed."
+            );
+        }
+
+
+        console.log(
+            "[ECG-Sense Report] Waveform rendered successfully."
+        );
+
+
+        /* ----------------------------------------------------
+           SAVE SESSION
            ---------------------------------------------------- */
 
         if (
             typeof saveSession ===
-            "function" &&
+                "function" &&
             typeof ECG_APP !==
-            "undefined"
+                "undefined" &&
+            ECG_APP &&
+            ECG_APP.storage
         ) {
 
-            saveSession(
-                ECG_APP.storage.currentSummary,
-                response.data
-            );
+            try {
 
+                saveSession(
+                    ECG_APP.storage.currentSummary,
+                    summary
+                );
 
-            console.log(
-                "[ECG-Sense Report] Summary saved to sessionStorage."
-            );
+                console.log(
+                    "[ECG-Sense Report] Summary saved to sessionStorage."
+                );
+
+            } catch (storageError) {
+
+                console.warn(
+                    "[ECG-Sense Report] Session save failed:",
+                    storageError
+                );
+            }
         }
+
+
+        console.log(
+            "[ECG-Sense Report] RECORD REPORT COMPLETE"
+        );
+
+
+        return {
+            summary,
+            waveform
+        };
 
 
     } catch (error) {
 
         console.error(
-            "[ECG-Sense Report] RECORD REPORT FAILED:",
+            "=================================================="
+        );
+
+        console.error(
+            "[ECG-Sense Report] RECORD REPORT FAILED"
+        );
+
+        console.error(
+            "[ECG-Sense Report] Error:",
             error
         );
 
         console.error(
-            "[ECG-Sense Report] Error message:",
+            "[ECG-Sense Report] Message:",
             error?.message
         );
 
         console.error(
-            "[ECG-Sense Report] Error stack:",
+            "[ECG-Sense Report] Stack:",
             error?.stack
+        );
+
+        console.error(
+            "=================================================="
         );
 
 
@@ -552,6 +952,9 @@ async function loadRecordReport(
                 8000
             );
         }
+
+
+        throw error;
     }
 }
 
@@ -565,7 +968,7 @@ function renderSummary(
 ) {
 
     console.log(
-        "[ECG-Sense Report] renderSummary() DATA:",
+        "[ECG-Sense Report] renderSummary():",
         summary
     );
 
@@ -579,40 +982,148 @@ function renderSummary(
 
 
     /* --------------------------------------------------------
-       TOP METRICS
+       RECORD
        -------------------------------------------------------- */
 
-    setText(
+    safeSetText(
+        "reportRecord",
+        summary.record ||
+        "Uploaded ECG"
+    );
+
+
+    safeSetText(
+        "analysisRecord",
+        summary.record
+            ? `Record ${summary.record}`
+            : "Uploaded ECG"
+    );
+
+
+    /* --------------------------------------------------------
+       DESCRIPTION
+       -------------------------------------------------------- */
+
+    const description =
+        summary.record
+
+            ? `MIT-BIH Record ${summary.record} was processed using the validated ECG-Sense signal-processing pipeline.`
+
+            : "Your ECG was processed using the ECG-Sense signal-processing pipeline.";
+
+
+    safeSetText(
+        "reportDescription",
+        description
+    );
+
+
+    safeSetText(
+        "analysisDescription",
+        description
+    );
+
+
+    /* --------------------------------------------------------
+       DETECTED BEATS
+       -------------------------------------------------------- */
+
+    safeSetText(
         "userBeatCount",
-        formatNumber(
+        safeFormatNumber(
             summary.detected_peaks
         )
     );
 
 
-    setText(
-        "userSignalQuality",
-        summary.signal_quality ||
-        "Good"
+    safeSetText(
+        "detectedPeaks",
+        safeFormatNumber(
+            summary.detected_peaks
+        )
     );
 
+
+    /* --------------------------------------------------------
+       REFERENCE BEATS
+       -------------------------------------------------------- */
+
+    safeSetText(
+        "detailReference",
+        safeFormatNumber(
+            summary.reference_beats
+        )
+    );
+
+
+    safeSetText(
+        "referenceBeats",
+        safeFormatNumber(
+            summary.reference_beats
+        )
+    );
+
+
+    /* --------------------------------------------------------
+       SIGNAL QUALITY
+       -------------------------------------------------------- */
+
+    const quality =
+        summary.signal_quality ||
+        "Good";
+
+
+    safeSetText(
+        "userSignalQuality",
+        quality
+    );
+
+
+    safeSetText(
+        "signalQuality",
+        quality
+    );
+
+
+    /* --------------------------------------------------------
+       DURATION
+       -------------------------------------------------------- */
+
+    const duration =
+        summary.duration_seconds;
+
+
+    const durationText =
+        duration !== null &&
+        duration !== undefined
+
+            ? `${Number(duration).toFixed(2)} s`
+
+            : "—";
+
+
+    safeSetText(
+        "duration",
+        durationText
+    );
+
+
+    /* --------------------------------------------------------
+       F1 / ANALYSIS QUALITY
+       -------------------------------------------------------- */
 
     const f1 =
         summary.f1;
 
 
-    let analysisQuality;
+    let analysisQuality =
+        "Processing Complete";
 
 
     if (
-        f1 === null ||
-        f1 === undefined
+        f1 !== null &&
+        f1 !== undefined
     ) {
-
-        analysisQuality =
-            "Processing Complete";
-
-    } else {
 
         const numericF1 =
             Number(f1);
@@ -640,7 +1151,7 @@ function renderSummary(
     }
 
 
-    setText(
+    safeSetText(
         "userAnalysisQuality",
         analysisQuality
     );
@@ -650,97 +1161,77 @@ function renderSummary(
        TECHNICAL SNAPSHOT
        -------------------------------------------------------- */
 
-    setText(
-        "detailReference",
-        formatNumber(
-            summary.reference_beats
-        )
-    );
-
-
-    setText(
+    safeSetText(
         "detailDetected",
-        formatNumber(
+        safeFormatNumber(
             summary.detected_peaks
         )
     );
 
 
-    setText(
+    safeSetText(
         "detailTP",
-        formatNumber(
+        safeFormatNumber(
             summary.tp
         )
     );
 
 
-    setText(
+    safeSetText(
         "detailFP",
-        formatNumber(
+        safeFormatNumber(
             summary.fp
         )
     );
 
 
-    setText(
+    safeSetText(
         "detailFN",
-        formatNumber(
+        safeFormatNumber(
             summary.fn
         )
     );
 
 
-    setText(
+    safeSetText(
         "detailF1",
-        formatPercent(
+        safeFormatPercent(
             summary.f1
         )
     );
 
 
     /* --------------------------------------------------------
-       RECORD NAME
+       ANALYSIS BADGE
        -------------------------------------------------------- */
 
-    setText(
-        "reportRecord",
-        summary.record ||
-        "Uploaded ECG"
+    safeSetText(
+        "analysisId",
+        `Record ${summary.record || "ECG"}`
     );
 
 
     /* --------------------------------------------------------
-       DESCRIPTION
+       DEBUG
        -------------------------------------------------------- */
 
-    if (summary.record) {
-
-        setText(
-            "reportDescription",
-            `MIT-BIH Record ${summary.record} was processed using the validated ECG-Sense signal-processing pipeline.`
-        );
-
-    } else {
-
-        setText(
-            "reportDescription",
-            "Your ECG was processed using the ECG-Sense signal-processing pipeline."
-        );
-    }
-
-
     console.log(
-        "[ECG-Sense Report] DOM VALUES UPDATED:"
+        "[ECG-Sense Report] DOM VALUES UPDATED"
     );
 
     console.log(
-        "Heartbeat Peaks:",
-        summary.detected_peaks
+        "Record:",
+        summary.record
     );
 
     console.log(
         "Reference Beats:",
         summary.reference_beats
+    );
+
+    console.log(
+        "Detected Peaks:",
+        summary.detected_peaks
     );
 
     console.log(
@@ -764,6 +1255,11 @@ function renderSummary(
     );
 
     console.log(
+        "Duration:",
+        summary.duration_seconds
+    );
+
+    console.log(
         "Analysis Quality:",
         analysisQuality
     );
@@ -779,7 +1275,7 @@ function renderUploadReport(
 ) {
 
     console.log(
-        "[ECG-Sense Report] renderUploadReport()",
+        "[ECG-Sense Report] renderUploadReport():",
         saved
     );
 
@@ -789,36 +1285,58 @@ function renderUploadReport(
         saved;
 
 
-    setText(
+    safeSetText(
         "userBeatCount",
-        formatNumber(
+        safeFormatNumber(
             analysis.detected_peaks
         )
     );
 
 
-    setText(
+    safeSetText(
+        "detectedPeaks",
+        safeFormatNumber(
+            analysis.detected_peaks
+        )
+    );
+
+
+    safeSetText(
         "userSignalQuality",
         analysis.signal_quality ||
         "Good"
     );
 
 
-    setText(
+    safeSetText(
+        "signalQuality",
+        analysis.signal_quality ||
+        "Good"
+    );
+
+
+    safeSetText(
         "userAnalysisQuality",
         analysis.signal_quality ||
         "Good"
     );
 
 
-    setText(
+    safeSetText(
         "reportRecord",
         saved.source_name ||
         "Uploaded ECG"
     );
 
 
-    setText(
+    safeSetText(
+        "analysisRecord",
+        saved.source_name ||
+        "Uploaded ECG"
+    );
+
+
+    safeSetText(
         "reportDescription",
         saved.id
             ? `Analysis ID: ${saved.id}`
@@ -826,71 +1344,77 @@ function renderUploadReport(
     );
 
 
-    setText(
+    safeSetText(
         "detailReference",
         "Not available"
     );
 
 
-    setText(
+    safeSetText(
+        "referenceBeats",
+        "Not available"
+    );
+
+
+    safeSetText(
         "detailDetected",
-        formatNumber(
+        safeFormatNumber(
             analysis.detected_peaks
         )
     );
 
 
-    setText(
+    safeSetText(
         "detailTP",
         "Not available"
     );
 
 
-    setText(
+    safeSetText(
         "detailFP",
         "Not available"
     );
 
 
-    setText(
+    safeSetText(
         "detailFN",
         "Not available"
     );
 
 
-    setText(
+    safeSetText(
         "detailF1",
         "Not available"
     );
 
 
     const canvas =
-        document.getElementById(
-            "userEcgCanvas"
-        );
+        getReportCanvas();
+
+
+    const signal =
+        analysis.filtered_signal ||
+        analysis.signal ||
+        [];
+
+
+    const peaks =
+        analysis.detected_samples ||
+        analysis.detected_peaks ||
+        [];
 
 
     if (
         canvas &&
-        typeof drawWaveformCanvas ===
-        "function"
+        Array.isArray(signal) &&
+        signal.length > 1
     ) {
 
-        drawWaveformCanvas(
+        drawReportWaveform(
             canvas,
-            {
-                signal:
-                    analysis.filtered_signal ||
-                    analysis.signal ||
-                    [],
-
-                peaks:
-                    analysis.detected_samples ||
-                    analysis.detected_peaks ||
-                    []
-            }
+            signal,
+            peaks
         );
-
 
         console.log(
             "[ECG-Sense Report] Uploaded waveform rendered."
@@ -906,74 +1430,80 @@ function renderUploadReport(
 function showEmptyState() {
 
     console.warn(
-        "[ECG-Sense Report] showEmptyState()"
+        "[ECG-Sense Report] No ECG analysis data available."
     );
 
 
-    setText(
+    safeSetText(
         "userBeatCount",
         "—"
     );
 
 
-    setText(
+    safeSetText(
+        "detectedPeaks",
+        "—"
+    );
+
+
+    safeSetText(
         "userSignalQuality",
         "Awaiting ECG"
     );
 
 
-    setText(
+    safeSetText(
+        "signalQuality",
+        "Awaiting ECG"
+    );
+
+
+    safeSetText(
         "userAnalysisQuality",
         "—"
     );
 
 
-    setText(
+    safeSetText(
+        "referenceBeats",
+        "—"
+    );
+
+
+    safeSetText(
         "detailReference",
         "—"
     );
 
 
-    setText(
+    safeSetText(
         "detailDetected",
         "—"
     );
 
 
-    setText(
+    safeSetText(
         "detailTP",
         "—"
     );
 
 
-    setText(
+    safeSetText(
         "detailFP",
         "—"
     );
 
 
-    setText(
+    safeSetText(
         "detailFN",
         "—"
     );
 
 
-    setText(
+    safeSetText(
         "detailF1",
         "—"
     );
-
-
-    if (
-        typeof notify ===
-        "function"
-    ) {
-
-        notify(
-            "No ECG analysis is available.",
-            "warning"
-        );
-    }
 }
 
 
@@ -994,12 +1524,6 @@ function setupReportButtons() {
         );
 
 
-    console.log(
-        "[ECG-Sense Report] Detailed button:",
-        detailedButton
-    );
-
-
     if (detailedButton) {
 
         detailedButton.addEventListener(
@@ -1007,7 +1531,7 @@ function setupReportButtons() {
             function () {
 
                 console.log(
-                    "[ECG-Sense Report] Opening advanced report."
+                    "[ECG-Sense Report] Detailed report button clicked."
                 );
 
 
@@ -1037,12 +1561,6 @@ function setupReportButtons() {
         );
 
 
-    console.log(
-        "[ECG-Sense Report] New analysis button:",
-        newAnalysis
-    );
-
-
     if (newAnalysis) {
 
         newAnalysis.addEventListener(
@@ -1050,7 +1568,7 @@ function setupReportButtons() {
             function () {
 
                 console.log(
-                    "[ECG-Sense Report] Opening upload page."
+                    "[ECG-Sense Report] New analysis button clicked."
                 );
 
 
@@ -1070,6 +1588,215 @@ function setupReportButtons() {
                     );
                 }
             }
+        );
+    }
+}
+
+
+/* ============================================================
+   INITIALIZE REPORT
+   ============================================================ */
+
+async function initializeReport() {
+
+    console.log(
+        "[ECG-Sense Report] initializeReport() STARTED"
+    );
+
+
+    try {
+
+        console.log(
+            "[ECG-Sense Report] apiGet:",
+            typeof apiGet
+        );
+
+
+        console.log(
+            "[ECG-Sense Report] getParam:",
+            typeof getParam
+        );
+
+
+        console.log(
+            "[ECG-Sense Report] setText:",
+            typeof setText
+        );
+
+
+        console.log(
+            "[ECG-Sense Report] ECG_APP:",
+            typeof ECG_APP !== "undefined"
+                ? ECG_APP
+                : "MISSING"
+        );
+
+
+        const record =
+            typeof getParam ===
+            "function"
+
+                ? getParam("record")
+
+                : new URLSearchParams(
+                    window.location.search
+                ).get("record");
+
+
+        console.log(
+            "[ECG-Sense Report] Record parameter:",
+            record
+        );
+
+
+        /* ----------------------------------------------------
+           SAVED UPLOAD
+           ---------------------------------------------------- */
+
+        let saved = null;
+
+
+        if (
+            typeof loadCurrentAnalysis ===
+            "function"
+        ) {
+
+            try {
+
+                saved =
+                    loadCurrentAnalysis();
+
+            } catch (error) {
+
+                console.warn(
+                    "[ECG-Sense Report] loadCurrentAnalysis failed:",
+                    error
+                );
+            }
+        }
+
+
+        console.log(
+            "[ECG-Sense Report] Saved analysis:",
+            saved
+        );
+
+
+        if (
+            saved &&
+            saved.engine
+        ) {
+
+            console.log(
+                "[ECG-Sense Report] Uploaded analysis detected."
+            );
+
+
+            renderUploadReport(
+                saved
+            );
+
+
+            return;
+        }
+
+
+        /* ----------------------------------------------------
+           MIT-BIH RECORD
+           ---------------------------------------------------- */
+
+        if (record) {
+
+            console.log(
+                `[ECG-Sense Report] Loading MIT-BIH record: ${record}`
+            );
+
+
+            await loadRecordReport(
+                record
+            );
+
+
+            console.log(
+                "[ECG-Sense Report] Record report finished."
+            );
+
+
+            return;
+        }
+
+
+        /* ----------------------------------------------------
+           SESSION SUMMARY
+           ---------------------------------------------------- */
+
+        let summary = null;
+
+
+        if (
+            typeof loadSession ===
+                "function" &&
+            typeof ECG_APP !==
+                "undefined" &&
+            ECG_APP &&
+            ECG_APP.storage
+        ) {
+
+            try {
+
+                summary =
+                    loadSession(
+                        ECG_APP.storage.currentSummary
+                    );
+
+            } catch (error) {
+
+                console.warn(
+                    "[ECG-Sense Report] Session summary load failed:",
+                    error
+                );
+            }
+        }
+
+
+        if (summary) {
+
+            renderSummary(
+                summary
+            );
+
+        } else {
+
+            showEmptyState();
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "=================================================="
+        );
+
+        console.error(
+            "[ECG-Sense Report] INITIALIZATION FAILED"
+        );
+
+        console.error(
+            error
+        );
+
+        console.error(
+            "Message:",
+            error?.message
+        );
+
+        console.error(
+            "Stack:",
+            error?.stack
+        );
+
+        console.error(
+            "=================================================="
         );
     }
 }
@@ -1111,7 +1838,24 @@ function startReportApplication() {
 
 
 /* ============================================================
-   DOM READY SAFE START
+   EXPOSE DEBUG FUNCTIONS
+   ============================================================ */
+
+window.drawReportWaveform =
+    drawReportWaveform;
+
+window.loadRecordReport =
+    loadRecordReport;
+
+window.renderSummary =
+    renderSummary;
+
+window.initializeReport =
+    initializeReport;
+
+
+/* ============================================================
+   DOM READY
    ============================================================ */
 
 if (
@@ -1137,6 +1881,7 @@ if (
     console.log(
         "[ECG-Sense Report] DOM already ready."
     );
+
 
     startReportApplication();
 }
