@@ -4,7 +4,7 @@
    ECG-SENSE GLOBAL FRONTEND CORE
    ============================================================ */
 
-const API_BASE = "http://127.0.0.1:8000/api";
+const API_BASE = "https://ecg-sense.onrender.com/api";
 
 const ECG_APP = {
     apiBase: API_BASE,
