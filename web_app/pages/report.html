@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,7 +12,7 @@
 
     <meta
         name="description"
-        content="ECG-Sense ECG analysis report."
+        content="ECG-Sense user-facing ECG analysis report."
     >
 
     <title>ECG-Sense | Report</title>
@@ -95,11 +94,13 @@
     </header>
 
 
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
+
     <main>
 
-        <!-- =================================================
-             HERO
-             ================================================= -->
+        <!-- HERO -->
 
         <section class="hero">
 
@@ -107,30 +108,22 @@
                 YOUR ECG SUMMARY
             </span>
 
-
             <h1>
-
                 Analysis
-
                 <span class="gradient-text">
                     complete.
                 </span>
-
             </h1>
 
-
             <p id="reportDescription">
-
-                ECG-Sense has processed your recording
-                and prepared a clear summary.
-
+                ECG-Sense is loading your ECG analysis...
             </p>
 
         </section>
 
 
         <!-- =================================================
-             RESULT HEADER + MAIN METRICS
+             RESULT SUMMARY
              ================================================= -->
 
         <section class="content">
@@ -143,12 +136,11 @@
                         RESULT
                     </span>
 
-
                     <h2
                         id="reportRecord"
                         style="margin-top:7px;"
                     >
-                        ECG Analysis
+                        Loading ECG...
                     </h2>
 
                 </div>
@@ -172,14 +164,12 @@
                         Heartbeat Peaks
                     </div>
 
-
                     <div
                         id="userBeatCount"
                         class="metric-value"
                     >
                         —
                     </div>
-
 
                     <div class="metric-caption">
                         Detected by signal processing
@@ -196,7 +186,6 @@
                         Signal Quality
                     </div>
 
-
                     <div
                         id="userSignalQuality"
                         class="metric-value"
@@ -204,7 +193,6 @@
                     >
                         —
                     </div>
-
 
                     <div class="metric-caption">
                         Engineering quality assessment
@@ -221,7 +209,6 @@
                         Analysis Quality
                     </div>
 
-
                     <div
                         id="userAnalysisQuality"
                         class="metric-value"
@@ -230,15 +217,14 @@
                         —
                     </div>
 
-
                     <div class="metric-caption">
-                        Based on detection performance
+                        Detection performance
                     </div>
 
                 </div>
 
 
-                <!-- REPORT STATUS -->
+                <!-- REPORT -->
 
                 <div class="metric-card">
 
@@ -246,14 +232,12 @@
                         Report
                     </div>
 
-
                     <div
                         class="metric-value"
                         style="font-size:1.25rem;"
                     >
                         Ready
                     </div>
-
 
                     <div class="metric-caption">
                         Detailed information available
@@ -278,7 +262,6 @@
                     ECG SIGNAL
                 </span>
 
-
                 <h2
                     style="
                         margin-top:7px;
@@ -291,11 +274,13 @@
 
                 <canvas
                     id="userEcgCanvas"
+                    width="1200"
+                    height="300"
                     style="
-                        display:block;
                         width:100%;
                         height:300px;
                         margin-top:18px;
+                        display:block;
                     "
                 ></canvas>
 
@@ -305,7 +290,156 @@
 
 
         <!-- =================================================
-             EXPLANATION
+             TECHNICAL SNAPSHOT
+             ================================================= -->
+
+        <section class="content">
+
+            <div class="card">
+
+                <span class="section-label">
+                    TECHNICAL SNAPSHOT
+                </span>
+
+
+                <h2
+                    style="
+                        margin-top:7px;
+                        font-size:1.65rem;
+                    "
+                >
+                    ECG detection performance
+                </h2>
+
+
+                <div
+                    class="metric-grid"
+                    style="margin-top:20px;"
+                >
+
+
+                    <!-- REFERENCE -->
+
+                    <div class="metric-card">
+
+                        <div class="metric-label">
+                            Reference Beats
+                        </div>
+
+                        <div
+                            id="detailReference"
+                            class="metric-value"
+                            style="font-size:1.35rem;"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+
+                    <!-- DETECTED -->
+
+                    <div class="metric-card">
+
+                        <div class="metric-label">
+                            Detected Peaks
+                        </div>
+
+                        <div
+                            id="detailDetected"
+                            class="metric-value"
+                            style="font-size:1.35rem;"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+
+                    <!-- TP -->
+
+                    <div class="metric-card">
+
+                        <div class="metric-label">
+                            True Positives
+                        </div>
+
+                        <div
+                            id="detailTP"
+                            class="metric-value"
+                            style="font-size:1.35rem;"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+
+                    <!-- FP -->
+
+                    <div class="metric-card">
+
+                        <div class="metric-label">
+                            False Positives
+                        </div>
+
+                        <div
+                            id="detailFP"
+                            class="metric-value"
+                            style="font-size:1.35rem;"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+
+                    <!-- FN -->
+
+                    <div class="metric-card">
+
+                        <div class="metric-label">
+                            False Negatives
+                        </div>
+
+                        <div
+                            id="detailFN"
+                            class="metric-value"
+                            style="font-size:1.35rem;"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+
+                    <!-- F1 -->
+
+                    <div class="metric-card">
+
+                        <div class="metric-label">
+                            F1 Score
+                        </div>
+
+                        <div
+                            id="detailF1"
+                            class="metric-value"
+                            style="font-size:1.35rem;"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             UNDERSTANDING RESULT
              ================================================= -->
 
         <section class="content">
@@ -316,7 +450,6 @@
                     UNDERSTANDING YOUR RESULT
                 </span>
 
-
                 <h2
                     style="
                         margin-top:7px;
@@ -326,24 +459,17 @@
                     What ECG-Sense actually measured
                 </h2>
 
-
                 <p
                     style="
                         color:#64748b;
                         max-width:800px;
                     "
                 >
-
                     ECG-Sense analyzes the digital waveform
                     and identifies heartbeat peaks using its
-                    signal-processing engine.
-
-                    The measurements shown here describe
-                    the ECG recording and detection performance.
-
-                    This is an engineering analysis,
-                    not a medical diagnosis.
-
+                    signal-processing engine. The values shown
+                    here are engineering measurements from the
+                    ECG recording and are not a medical diagnosis.
                 </p>
 
             </div>
@@ -362,7 +488,6 @@
                 <span class="section-label">
                     NEXT STEP
                 </span>
-
 
                 <h2
                     style="
@@ -386,7 +511,6 @@
                     <button
                         id="viewDetailedReport"
                         class="primary-button"
-                        type="button"
                     >
                         View Detailed Report →
                     </button>
@@ -395,7 +519,6 @@
                     <button
                         id="newAnalysis"
                         class="secondary-button"
-                        type="button"
                     >
                         Analyze Another ECG
                     </button>
@@ -416,7 +539,7 @@
 
 
         <!-- =================================================
-             DISCLAIMER
+             WARNING
              ================================================= -->
 
         <section class="content">
@@ -429,151 +552,8 @@
 
                 ECG-Sense provides signal-processing
                 analysis and AI-assisted explanation.
-
                 It is not a substitute for evaluation
                 by a qualified healthcare professional.
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             TECHNICAL SNAPSHOT
-             ================================================= -->
-
-        <section class="content">
-
-            <div class="card">
-
-                <span class="section-label">
-                    TECHNICAL SNAPSHOT
-                </span>
-
-
-                <div class="metric-grid">
-
-
-                    <!-- REFERENCE BEATS -->
-
-                    <div class="metric-card">
-
-                        <div class="metric-label">
-                            Reference Beats
-                        </div>
-
-
-                        <div
-                            id="detailReference"
-                            class="metric-value"
-                            style="font-size:1.35rem;"
-                        >
-                            —
-                        </div>
-
-                    </div>
-
-
-                    <!-- DETECTED PEAKS -->
-
-                    <div class="metric-card">
-
-                        <div class="metric-label">
-                            Detected Peaks
-                        </div>
-
-
-                        <div
-                            id="detailDetected"
-                            class="metric-value"
-                            style="font-size:1.35rem;"
-                        >
-                            —
-                        </div>
-
-                    </div>
-
-
-                    <!-- TRUE POSITIVES -->
-
-                    <div class="metric-card">
-
-                        <div class="metric-label">
-                            True Positives
-                        </div>
-
-
-                        <div
-                            id="detailTP"
-                            class="metric-value"
-                            style="font-size:1.35rem;"
-                        >
-                            —
-                        </div>
-
-                    </div>
-
-
-                    <!-- FALSE POSITIVES -->
-
-                    <div class="metric-card">
-
-                        <div class="metric-label">
-                            False Positives
-                        </div>
-
-
-                        <div
-                            id="detailFP"
-                            class="metric-value"
-                            style="font-size:1.35rem;"
-                        >
-                            —
-                        </div>
-
-                    </div>
-
-
-                    <!-- FALSE NEGATIVES -->
-
-                    <div class="metric-card">
-
-                        <div class="metric-label">
-                            False Negatives
-                        </div>
-
-
-                        <div
-                            id="detailFN"
-                            class="metric-value"
-                            style="font-size:1.35rem;"
-                        >
-                            —
-                        </div>
-
-                    </div>
-
-
-                    <!-- F1 -->
-
-                    <div class="metric-card">
-
-                        <div class="metric-label">
-                            F1 Score
-                        </div>
-
-
-                        <div
-                            id="detailF1"
-                            class="metric-value"
-                            style="font-size:1.35rem;"
-                        >
-                            —
-                        </div>
-
-                    </div>
-
-                </div>
 
             </div>
 
@@ -596,17 +576,13 @@
             font-size:.72rem;
         "
     >
-
         ECG-Sense · User-facing ECG analysis report
-
     </footer>
 
 </div>
 
 
-<!-- =========================================================
-     GLOBAL STATUS
-     ========================================================= -->
+<!-- GLOBAL STATUS -->
 
 <div
     id="globalStatus"
@@ -617,17 +593,59 @@
 
 <!-- =========================================================
      JAVASCRIPT
-     IMPORTANT ORDER:
-     common → analyze → report
+     IMPORTANT ORDER
      ========================================================= -->
 
-<script src="../assets/common.js?v=20260825"></script>
-<script src="../assets/analyze.js?v=20260825"></script>
-<script src="../assets/report.js?v=20260825"></script>
+<script
+    src="../assets/common.js?v=20260825"
+    defer
+></script>
+
+<script
+    src="../assets/report.js?v=20260825"
+    defer
+></script>
+
+
+<!-- =========================================================
+     REPORT PAGE SAFETY CHECK
+     ========================================================= -->
 
 <script>
-    console.log("ECG-Sense REPORT HTML LOADED");
+
+window.addEventListener("load", function () {
+
+    console.log(
+        "%c[ECG-Sense] REPORT HTML LOADED",
+        "color:green;font-weight:bold;"
+    );
+
+    console.log(
+        "[ECG-Sense] Current URL:",
+        window.location.href
+    );
+
+    console.log(
+        "[ECG-Sense] common.js:",
+        typeof window.apiGet
+    );
+
+    console.log(
+        "[ECG-Sense] report.js loadRecordReport:",
+        typeof window.loadRecordReport
+    );
+
+    console.log(
+        "[ECG-Sense] Script sources:",
+        [...document.scripts].map(
+            script => script.src
+        )
+    );
+
+});
+
 </script>
+
 
 </body>
 
