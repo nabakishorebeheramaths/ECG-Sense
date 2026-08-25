@@ -1,5 +1,6 @@
 "use strict";
 
+console.log("ECG-Sense REPORT.JS LOADED");
 /* ============================================================
    ECG-SENSE REPORT PAGE
    Robust frontend report renderer
